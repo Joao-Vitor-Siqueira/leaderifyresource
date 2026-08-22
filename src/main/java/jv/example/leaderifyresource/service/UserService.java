@@ -1,5 +1,6 @@
 package jv.example.leaderifyresource.service;
 
+import jv.example.leaderifyresource.exception.UserNotFoundException;
 import jv.example.leaderifyresource.model.User;
 import jv.example.leaderifyresource.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +56,10 @@ public class UserService {
         String token = jwtService.generateToken(username);
 
         return token;
+    }
+
+    public User getUser(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 }

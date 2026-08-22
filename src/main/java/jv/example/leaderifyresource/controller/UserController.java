@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUser(id));
+    }
+
     @GetMapping
     public ResponseEntity<Page<User>> listUsers(
             @RequestParam(required = false) String name,
