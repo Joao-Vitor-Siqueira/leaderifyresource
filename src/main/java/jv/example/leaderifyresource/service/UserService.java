@@ -1,6 +1,7 @@
 package jv.example.leaderifyresource.service;
 
-import jv.example.leaderifyresource.exception.UserNotFoundException;
+import jakarta.transaction.Transactional;
+import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.User;
 import jv.example.leaderifyresource.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class UserService {
         return users;
     }
 
+    @Transactional
     public User createUser(User userRequest) {
         if(userRepository.existsByEmail(userRequest.getEmail())) {
             throw new RuntimeException();
@@ -60,6 +62,6 @@ public class UserService {
 
     public User getUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElseThrow(() -> new ResourceNotFoundException(User.class.getSimpleName(), id));
     }
 }

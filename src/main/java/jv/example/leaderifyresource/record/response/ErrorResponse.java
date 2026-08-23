@@ -1,4 +1,4 @@
-package jv.example.leaderifyresource.record;
+package jv.example.leaderifyresource.record.response;
 
 import java.time.Instant;
 
