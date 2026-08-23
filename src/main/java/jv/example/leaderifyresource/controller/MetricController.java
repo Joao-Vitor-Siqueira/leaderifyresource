@@ -25,14 +25,14 @@ public class MetricController {
         return ResponseEntity.ok(metricService.listMetrics(pageable));
     }
 
-    @PostMapping("/leaderboards/{leaderboardId}/metrics")
-    public ResponseEntity<MetricResponse> createMetric(@PathVariable Long leaderboardId, MetricRequest metricRequest) {
-        return ResponseEntity.ok(metricService.createMetric(leaderboardId ,metricRequest));
+    @PostMapping("/metrics")
+    public ResponseEntity<MetricResponse> createMetric(MetricRequest request) {
+        return ResponseEntity.ok(metricService.createMetric(request));
     }
 
     @PatchMapping("/metrics/{id}")
-    public ResponseEntity<MetricResponse> updateMetric(@PathVariable Long id, @RequestBody MetricRequest metricRequest) {
-        return ResponseEntity.ok(metricService.updateMetric(id, metricRequest));
+    public ResponseEntity<MetricResponse> updateMetric(@PathVariable Long id, @RequestBody MetricRequest request) {
+        return ResponseEntity.ok(metricService.updateMetric(id, request));
     }
 
     @DeleteMapping("/metrics/{id}")

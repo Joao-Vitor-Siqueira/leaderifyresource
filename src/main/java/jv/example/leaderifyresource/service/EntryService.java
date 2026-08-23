@@ -20,10 +20,10 @@ public class EntryService {
     private final LeaderboardRepository leaderboardRepository;
 
     @Transactional
-    public EntryResponse createEntry(Long leaderboardId,EntryRequest request) {
-        Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
+    public EntryResponse createEntry(EntryRequest request) {
+        Leaderboard leaderboard = leaderboardRepository.findById(request.LeaderboardId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), leaderboardId
+                        Leaderboard.class.getSimpleName(), request.LeaderboardId()
                 ));
 
         Entry entry = new Entry();

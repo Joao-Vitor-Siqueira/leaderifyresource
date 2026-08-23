@@ -25,14 +25,14 @@ public class EntryController {
         return ResponseEntity.ok(entryService.listEntries(pageable));
     }
 
-    @PostMapping("/leaderboards/{leaderboardId}/entries")
-    public ResponseEntity<EntryResponse> createEntry(@PathVariable Long leaderboardId,EntryRequest entryRequest) {
-        return ResponseEntity.ok(entryService.createEntry(leaderboardId ,entryRequest));
+    @PostMapping("/entries")
+    public ResponseEntity<EntryResponse> createEntry(EntryRequest request) {
+        return ResponseEntity.ok(entryService.createEntry(request));
     }
 
     @PatchMapping("/entries/{id}")
-    public ResponseEntity<EntryResponse> updateEntry(@PathVariable Long id, @RequestBody EntryRequest entryRequest) {
-        return ResponseEntity.ok(entryService.updateEntry(id, entryRequest));
+    public ResponseEntity<EntryResponse> updateEntry(@PathVariable Long id, @RequestBody EntryRequest request) {
+        return ResponseEntity.ok(entryService.updateEntry(id, request));
     }
 
     @DeleteMapping("/entries/{id}")

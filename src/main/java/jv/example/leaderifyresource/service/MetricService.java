@@ -20,10 +20,10 @@ public class MetricService {
     private final LeaderboardRepository leaderboardRepository;
 
     @Transactional
-    public MetricResponse createMetric(Long leaderboardId, MetricRequest request) {
-        Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
+    public MetricResponse createMetric(MetricRequest request) {
+        Leaderboard leaderboard = leaderboardRepository.findById(request.LeaderboardId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), leaderboardId
+                        Leaderboard.class.getSimpleName(), request.LeaderboardId()
                 ));
 
         Metric metric = new Metric();

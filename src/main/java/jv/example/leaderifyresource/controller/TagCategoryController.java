@@ -25,9 +25,9 @@ public class TagCategoryController {
         return ResponseEntity.ok(tagCategoryService.listTagCategories(pageable));
     }
 
-    @PostMapping("/leaderboards/{leaderboardId}/tagCategories")
-    public ResponseEntity<TagCategoryResponse> createTagCategory(@PathVariable Long leaderboardId, TagCategoryRequest tagCategoryRequest) {
-        return ResponseEntity.ok(tagCategoryService.createTagCategory(leaderboardId ,tagCategoryRequest));
+    @PostMapping("/tagCategories")
+    public ResponseEntity<TagCategoryResponse> createTagCategory(TagCategoryRequest tagCategoryRequest) {
+        return ResponseEntity.ok(tagCategoryService.createTagCategory(tagCategoryRequest));
     }
 
     @PatchMapping("/tagCategories/{id}")
