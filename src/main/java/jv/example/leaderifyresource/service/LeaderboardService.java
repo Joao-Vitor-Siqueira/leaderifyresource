@@ -32,7 +32,8 @@ public class LeaderboardService {
                 savedLeaderboard.getName(),
                 savedLeaderboard.getDescription(),
                 savedLeaderboard.getMetrics(),
-                savedLeaderboard.getEntries()
+                savedLeaderboard.getEntries(),
+                savedLeaderboard.getTagCategories()
         );
     }
 
@@ -47,7 +48,8 @@ public class LeaderboardService {
                 leaderboard.getName(),
                 leaderboard.getDescription(),
                 leaderboard.getMetrics(),
-                leaderboard.getEntries()
+                leaderboard.getEntries(),
+                leaderboard.getTagCategories()
         );
     }
 
@@ -58,7 +60,8 @@ public class LeaderboardService {
                         leaderboard.getName(),
                         leaderboard.getDescription(),
                         leaderboard.getMetrics(),
-                        leaderboard.getEntries()
+                        leaderboard.getEntries(),
+                        leaderboard.getTagCategories()
                 ));
     }
 
@@ -78,7 +81,8 @@ public class LeaderboardService {
                 leaderboard.getName(),
                 leaderboard.getDescription(),
                 leaderboard.getMetrics(),
-                leaderboard.getEntries()
+                leaderboard.getEntries(),
+                leaderboard.getTagCategories()
         );
     }
 

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "tag")
 @Getter
@@ -24,4 +26,7 @@ public class Tag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_category_id")
     private TagCategory tagCategory;
+
+    @OneToMany(mappedBy = "tag")
+    private List<EntryTag> entryTags;
 }

@@ -29,4 +29,7 @@ public class Leaderboard extends BaseEntity {
 
     @OneToMany(mappedBy = "leaderboard")
     private List<Entry> entries;
+
+    @OneToMany(mappedBy = "leaderboard")
+    private List<TagCategory> tagCategories;
 }

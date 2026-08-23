@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "entry")
 @Getter
@@ -25,4 +27,7 @@ public class Entry extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "leaderboard_id")
     private Leaderboard leaderboard;
+
+    @OneToMany(mappedBy = "entry")
+    private List<EntryTag> entryTags;
 }
