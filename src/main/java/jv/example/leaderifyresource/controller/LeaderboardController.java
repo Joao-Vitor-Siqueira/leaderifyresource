@@ -31,7 +31,7 @@ public class LeaderboardController{
         return ResponseEntity.ok(leaderboardService.createLeaderboard(request));
     }
 
-    @PostMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<LeaderboardResponse> updateLeaderboard(@PathVariable Long id,LeaderboardRequest request){
         return ResponseEntity.ok(leaderboardService.updateLeaderboard(id, request));
     }

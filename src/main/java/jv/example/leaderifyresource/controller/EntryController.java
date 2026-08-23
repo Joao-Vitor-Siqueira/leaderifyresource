@@ -30,7 +30,7 @@ public class EntryController {
         return ResponseEntity.ok(entryService.createEntry(leaderboardId ,entryRequest));
     }
 
-    @PostMapping("/entries/{id}")
+    @PatchMapping("/entries/{id}")
     public ResponseEntity<EntryResponse> updateEntry(@PathVariable Long id, @RequestBody EntryRequest entryRequest) {
         return ResponseEntity.ok(entryService.updateEntry(id, entryRequest));
     }
