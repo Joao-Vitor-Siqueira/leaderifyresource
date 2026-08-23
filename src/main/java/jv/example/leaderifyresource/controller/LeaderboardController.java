@@ -17,7 +17,7 @@ public class LeaderboardController{
     private final LeaderboardService leaderboardService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<LeaderboardResponse> getLeaderboard(Long id){
+    public ResponseEntity<LeaderboardResponse> getLeaderboard(@PathVariable Long id){
         return ResponseEntity.ok(leaderboardService.findLeaderboardById(id));
     }
 
@@ -32,7 +32,7 @@ public class LeaderboardController{
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<LeaderboardResponse> updateLeaderboard(Long id,LeaderboardRequest request){
+    public ResponseEntity<LeaderboardResponse> updateLeaderboard(@PathVariable Long id,LeaderboardRequest request){
         return ResponseEntity.ok(leaderboardService.updateLeaderboard(id, request));
     }
 

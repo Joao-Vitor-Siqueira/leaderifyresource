@@ -6,6 +6,7 @@ import jv.example.leaderifyresource.model.Metric;
 import java.util.List;
 
 public record LeaderboardResponse(
+        Long id,
         String name,
         String description,
         List<Metric> metrics,

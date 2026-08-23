@@ -28,6 +28,7 @@ public class LeaderboardService {
         Leaderboard savedLeaderboard = leaderboardRepository.save(leaderboard);
 
         return new LeaderboardResponse(
+                savedLeaderboard.getId(),
                 savedLeaderboard.getName(),
                 savedLeaderboard.getDescription(),
                 savedLeaderboard.getMetrics(),
@@ -42,6 +43,7 @@ public class LeaderboardService {
                 ));
 
         return new LeaderboardResponse(
+                leaderboard.getId(),
                 leaderboard.getName(),
                 leaderboard.getDescription(),
                 leaderboard.getMetrics(),
@@ -52,6 +54,7 @@ public class LeaderboardService {
     public Page<LeaderboardResponse> listLeaderboards(Pageable pageable){
         return leaderboardRepository.findAll(pageable)
                 .map(leaderboard -> new LeaderboardResponse(
+                        leaderboard.getId(),
                         leaderboard.getName(),
                         leaderboard.getDescription(),
                         leaderboard.getMetrics(),
@@ -71,6 +74,7 @@ public class LeaderboardService {
         leaderboard.setMetrics(request.metrics());
 
         return new LeaderboardResponse(
+                leaderboard.getId(),
                 leaderboard.getName(),
                 leaderboard.getDescription(),
                 leaderboard.getMetrics(),
