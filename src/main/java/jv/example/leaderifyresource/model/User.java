@@ -1,14 +1,18 @@
 package jv.example.leaderifyresource.model;
 
 import jakarta.persistence.*;
+import jv.example.leaderifyresource.utils.BaseEntity;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
+public class User extends BaseEntity {
 
     public User(String username, String password, String email) {
         this.username = username;
@@ -28,5 +32,4 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String email;
-
 }
