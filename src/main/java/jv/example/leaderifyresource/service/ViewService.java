@@ -44,7 +44,7 @@ public class ViewService {
         View view = new View();
         view.setLeaderboard(leaderboard);
         view.setName(request.name());
-        view.setUserLeaderboard();
+        view.setUserLeaderboard(userLeaderboard);
         view.setViewMetricConfigs(request.viewMetricConfigs());
         view.setViewTagConfigs(request.viewTagConfigs());
         view.setVisibility(request.visibility());
