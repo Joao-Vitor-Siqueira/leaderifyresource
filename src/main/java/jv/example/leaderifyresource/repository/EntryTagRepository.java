@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface EntryTagRepository extends JpaRepository<EntryTag, Long> {
-    Optional<EntryTag> findByEntryIdAndMetricId(Long entryId, Long metricId);
+    Optional<EntryTag> findByEntryIdAndTagId(Long entryId, Long tagId);
 }

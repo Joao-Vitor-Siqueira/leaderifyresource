@@ -6,7 +6,6 @@ import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.Entry;
 import jv.example.leaderifyresource.model.EntryTag;
 import jv.example.leaderifyresource.model.Tag;
-import jv.example.leaderifyresource.model.Value;
 import jv.example.leaderifyresource.record.request.EntryTagRequest;
 import jv.example.leaderifyresource.record.response.EntryTagResponse;
 import jv.example.leaderifyresource.repository.EntryRepository;
@@ -29,7 +28,7 @@ public class EntryTagService {
     @Transactional
     public EntryTagResponse createEntryTag(EntryTagRequest request) {
         Optional<EntryTag> exists =
-                entryTagRepository.findByEntryIdAndMetricId(request.entryId(),request.tagId());
+                entryTagRepository.findByEntryIdAndTagId(request.entryId(),request.tagId());
         if (exists.isPresent()) {
             throw new ResourceAlreadyExistsException(EntryTag.class.getSimpleName(), exists.get().getId());
         }

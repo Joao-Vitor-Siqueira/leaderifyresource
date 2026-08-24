@@ -46,10 +46,16 @@ public class ValueService {
     }
 
     public ValueResponse findValueById(Long id) {
-        return valueRepository.findValueResponseById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                Value.class.getSimpleName(), id));
+        Value value =
+                valueRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
+                        Value.class.getSimpleName(), id
+                ));
+        return new ValueResponse(
+                value.getId(),
+                value.getMetric().getId(),
+                value.getEntry().getId(),
+                value.getValue()
+        );
     }
 
     public Page<ValueResponse> listValues(Pageable pageable) {
