@@ -28,14 +28,14 @@ public class UserLeaderboardService {
     @Transactional
     public UserLeaderboardResponse createUserLeaderboard(UserLeaderboardRequest request) {
         Optional<UserLeaderboard> exists =
-                userLeaderboardRepository.findByUserIdAndLeaderboardId(request.userId(),request.LeaderboardId());
+                userLeaderboardRepository.findByUserIdAndLeaderboardId(request.userId(),request.leaderboardId());
         if (exists.isPresent()) {
             throw new ResourceAlreadyExistsException(UserLeaderboard.class.getSimpleName(), exists.get().getId());
         }
 
-        Leaderboard leaderboard = leaderboardRepository.findById(request.LeaderboardId())
+        Leaderboard leaderboard = leaderboardRepository.findById(request.leaderboardId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), request.LeaderboardId()
+                        Leaderboard.class.getSimpleName(), request.leaderboardId()
                 ));
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new ResourceNotFoundException(

@@ -4,7 +4,7 @@ import jv.example.leaderifyresource.utils.Role;
 
 public record UserLeaderboardRequest(
         Long userId,
-        Long LeaderboardId,
+        Long leaderboardId,
         Role role
 ) {
 }
