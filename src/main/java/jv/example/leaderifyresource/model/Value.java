@@ -6,7 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "value")
+@Table(
+        name = "value",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_metric_entry_pair",
+                        columnNames = {"metric_id", "entry_id"}
+                )
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor

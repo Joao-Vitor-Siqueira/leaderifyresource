@@ -13,16 +13,32 @@ import java.time.Instant;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFound(
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(
             ResourceNotFoundException ex, HttpServletRequest request) {
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(
                         HttpStatus.NOT_FOUND.value(),
-                        ex.getResource(), ex.getMessage(),
+                        ex.getResource(),
+                        ex.getMessage(),
                         Instant.now(),
                         request.getRequestURI())
+                );
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleResourceAlreadyExists(
+            ResourceAlreadyExistsException ex, HttpServletRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(
+                        HttpStatus.CONFLICT.value(),
+                        ex.getResource(),
+                        ex.getMessage(),
+                        Instant.now(),
+                        request.getRequestURI())
+
                 );
     }
 }

@@ -12,30 +12,31 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/tagCategories")
 public class TagCategoryController {
     private final TagCategoryService tagCategoryService;
 
-    @GetMapping("/tagCategories/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<TagCategoryResponse> getTagCategory(@PathVariable Long id){
         return ResponseEntity.ok(tagCategoryService.findTagCategoryById(id));
     }
 
-    @GetMapping("/tagCategories")
+    @GetMapping
     public ResponseEntity<Page<TagCategoryResponse>> getTagCategories(Pageable pageable){
         return ResponseEntity.ok(tagCategoryService.listTagCategories(pageable));
     }
 
-    @PostMapping("/tagCategories")
+    @PostMapping
     public ResponseEntity<TagCategoryResponse> createTagCategory(TagCategoryRequest tagCategoryRequest) {
         return ResponseEntity.ok(tagCategoryService.createTagCategory(tagCategoryRequest));
     }
 
-    @PatchMapping("/tagCategories/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<TagCategoryResponse> updateTagCategory(@PathVariable Long id, @RequestBody TagCategoryRequest tagCategoryRequest) {
         return ResponseEntity.ok(tagCategoryService.updateTagCategory(id, tagCategoryRequest));
     }
 
-    @DeleteMapping("/tagCategories/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTagCategory(@PathVariable Long id){
         tagCategoryService.deleteTagCategory(id);

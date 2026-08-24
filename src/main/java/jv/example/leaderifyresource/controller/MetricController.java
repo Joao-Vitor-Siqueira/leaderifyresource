@@ -12,30 +12,31 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/metrics")
 public class MetricController {
     private final MetricService metricService;
 
-    @GetMapping("/metrics/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<MetricResponse> getMetric(@PathVariable Long id){
         return ResponseEntity.ok(metricService.findMetricById(id));
     }
 
-    @GetMapping("/metrics")
+    @GetMapping
     public ResponseEntity<Page<MetricResponse>> getMetrics(Pageable pageable){
         return ResponseEntity.ok(metricService.listMetrics(pageable));
     }
 
-    @PostMapping("/metrics")
+    @PostMapping
     public ResponseEntity<MetricResponse> createMetric(MetricRequest request) {
         return ResponseEntity.ok(metricService.createMetric(request));
     }
 
-    @PatchMapping("/metrics/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<MetricResponse> updateMetric(@PathVariable Long id, @RequestBody MetricRequest request) {
         return ResponseEntity.ok(metricService.updateMetric(id, request));
     }
 
-    @DeleteMapping("/metrics/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMetric(@PathVariable Long id){
         metricService.deleteMetric(id);
