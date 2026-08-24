@@ -3,7 +3,9 @@ package jv.example.leaderifyresource.model;
 import jakarta.persistence.*;
 import jv.example.leaderifyresource.utils.BaseEntity;
 import jv.example.leaderifyresource.utils.RelationshipStatus;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
@@ -17,7 +19,8 @@ import java.util.Objects;
                 )
         }
 )
-
+@Getter
+@Setter
 @NoArgsConstructor
 public class UserRelationship extends BaseEntity {
 
@@ -47,19 +50,19 @@ public class UserRelationship extends BaseEntity {
             );
         }
 
-        UserRelationship friendship = new UserRelationship();
+        UserRelationship userRelationship = new UserRelationship();
 
         if (requester.getId() < receiver.getId()) {
-            friendship.userLow = requester;
-            friendship.userHigh = receiver;
+            userRelationship.userLow = requester;
+            userRelationship.userHigh = receiver;
         } else {
-            friendship.userLow = receiver;
-            friendship.userHigh = requester;
+            userRelationship.userLow = receiver;
+            userRelationship.userHigh = requester;
         }
 
-        friendship.status = Objects.equals(requester.getId(), friendship.userLow.getId()) ?
+        userRelationship.status = Objects.equals(requester.getId(), userRelationship.userLow.getId()) ?
                 RelationshipStatus.PENDING_LOW_HIGH : RelationshipStatus.PENDING_HIGH_LOW;
 
-        return friendship;
+        return userRelationship;
     }
 }
