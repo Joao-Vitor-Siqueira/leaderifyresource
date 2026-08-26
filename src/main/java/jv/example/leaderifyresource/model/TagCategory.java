@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,6 +28,15 @@ public class TagCategory {
     @JoinColumn(name = "leaderboard_id", nullable = false)
     private Leaderboard leaderboard;
 
-    @OneToMany(mappedBy = "tagCategory")
-    private List<Tag> tags;
+    @OneToMany(
+            mappedBy = "tagCategory",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Tag> tags = new ArrayList<>();
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
+        tag.setTagCategory(this);
+    }
 }

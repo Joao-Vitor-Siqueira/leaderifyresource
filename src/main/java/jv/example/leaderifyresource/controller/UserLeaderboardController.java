@@ -27,7 +27,7 @@ public class UserLeaderboardController {
     }
 
     @PostMapping
-    public ResponseEntity<UserLeaderboardResponse> createUserLeaderboard(UserLeaderboardRequest request) {
+    public ResponseEntity<UserLeaderboardResponse> createUserLeaderboard(@RequestBody UserLeaderboardRequest request) {
         return ResponseEntity.ok(userLeaderboardService.createUserLeaderboard(request));
     }
 

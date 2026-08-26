@@ -27,7 +27,7 @@ public class MetricController {
     }
 
     @PostMapping
-    public ResponseEntity<MetricResponse> createMetric(MetricRequest request, @PathVariable Long leaderboardId) {
+    public ResponseEntity<MetricResponse> createMetric(@RequestBody MetricRequest request, @PathVariable Long leaderboardId) {
         return ResponseEntity.ok(metricService.createMetric(request, leaderboardId));
     }
 

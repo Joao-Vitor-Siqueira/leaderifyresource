@@ -27,7 +27,7 @@ public class ValueController {
     }
 
     @PostMapping
-    public ResponseEntity<ValueResponse> createMetric(ValueRequest request) {
+    public ResponseEntity<ValueResponse> createMetric(@RequestBody ValueRequest request) {
         return ResponseEntity.ok(valueService.createValue(request));
     }
 

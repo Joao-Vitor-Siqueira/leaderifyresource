@@ -27,7 +27,7 @@ public class UserRelationshipController {
     }
 
     @PostMapping
-    public ResponseEntity<UserRelationshipResponse> createUserRelationship(UserRelationshipRequest request) {
+    public ResponseEntity<UserRelationshipResponse> createUserRelationship(@RequestBody UserRelationshipRequest request) {
         return ResponseEntity.ok(userRelationshipService.createUserRelationship(request));
     }
 

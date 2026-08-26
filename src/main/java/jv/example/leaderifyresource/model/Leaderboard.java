@@ -39,8 +39,12 @@ public class Leaderboard extends BaseEntity {
     )
     private List<Entry> entries = new ArrayList<>();
 
-    @OneToMany(mappedBy = "leaderboard")
-    private List<TagCategory> tagCategories;
+    @OneToMany(
+            mappedBy = "leaderboard",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<TagCategory> tagCategories = new ArrayList<>();
 
     public void addMetric(Metric metric) {
         metrics.add(metric);
@@ -50,5 +54,10 @@ public class Leaderboard extends BaseEntity {
     public void addEntry(Entry entry) {
         entries.add(entry);
         entry.setLeaderboard(this);
+    }
+
+    public void addTagCategory(TagCategory tagCategory) {
+        tagCategories.add(tagCategory);
+        tagCategory.setLeaderboard(this);
     }
 }

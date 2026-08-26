@@ -27,7 +27,7 @@ public class EntryController {
     }
 
     @PostMapping
-    public ResponseEntity<EntryResponse> createEntry(EntryRequest request, @PathVariable Long leaderboardId) {
+    public ResponseEntity<EntryResponse> createEntry(@RequestBody EntryRequest request, @PathVariable Long leaderboardId) {
         return ResponseEntity.ok(entryService.createEntry(request, leaderboardId));
     }
 

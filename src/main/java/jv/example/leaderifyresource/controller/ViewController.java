@@ -26,7 +26,7 @@ public class ViewController {
     }
 
     @PostMapping
-    public ResponseEntity<ViewResponse> createView(ViewRequest request) {
+    public ResponseEntity<ViewResponse> createView(@RequestBody ViewRequest request) {
         return ResponseEntity.ok(viewService.createView(request));
     }
 

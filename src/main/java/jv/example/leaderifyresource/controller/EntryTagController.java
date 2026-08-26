@@ -27,7 +27,7 @@ public class EntryTagController {
     }
 
     @PostMapping
-    public ResponseEntity<EntryTagResponse> createEntryTag(EntryTagRequest request) {
+    public ResponseEntity<EntryTagResponse> createEntryTag(@RequestBody EntryTagRequest request) {
         return ResponseEntity.ok(entryTagService.createEntryTag(request));
     }
 

@@ -27,7 +27,7 @@ public class TagCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<TagCategoryResponse> createTagCategory(TagCategoryRequest tagCategoryRequest, @PathVariable Long leaderboardId) {
+    public ResponseEntity<TagCategoryResponse> createTagCategory(@RequestBody TagCategoryRequest tagCategoryRequest, @PathVariable Long leaderboardId) {
         return ResponseEntity.ok(tagCategoryService.createTagCategory(tagCategoryRequest, leaderboardId));
     }
 

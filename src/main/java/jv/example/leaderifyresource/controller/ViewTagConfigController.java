@@ -27,7 +27,7 @@ public class ViewTagConfigController {
     }
 
     @PostMapping
-    public ResponseEntity<ViewTagConfigResponse> createViewTagConfig(ViewTagConfigRequest request) {
+    public ResponseEntity<ViewTagConfigResponse> createViewTagConfig(@RequestBody ViewTagConfigRequest request) {
         return ResponseEntity.ok(viewTagConfigService.createViewTagConfig(request));
     }
 

@@ -27,7 +27,7 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<TagResponse> createTag(TagRequest request, @PathVariable Long tagCategoryId) {
+    public ResponseEntity<TagResponse> createTag(@RequestBody TagRequest request, @PathVariable Long tagCategoryId) {
         return ResponseEntity.ok(tagService.createTag(request, tagCategoryId));
     }
 

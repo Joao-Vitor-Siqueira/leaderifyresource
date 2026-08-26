@@ -27,7 +27,7 @@ public class ViewMetricConfigController {
     }
 
     @PostMapping
-    public ResponseEntity<ViewMetricConfigResponse> createViewMetricConfig(ViewMetricConfigRequest request) {
+    public ResponseEntity<ViewMetricConfigResponse> createViewMetricConfig(@RequestBody ViewMetricConfigRequest request) {
         return ResponseEntity.ok(viewMetricConfigService.createViewMetricConfig(request));
     }
 

@@ -3,8 +3,10 @@ package jv.example.leaderifyresource.service;
 import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.Leaderboard;
+import jv.example.leaderifyresource.model.Tag;
 import jv.example.leaderifyresource.model.TagCategory;
 import jv.example.leaderifyresource.record.request.TagCategoryRequest;
+import jv.example.leaderifyresource.record.request.TagRequest;
 import jv.example.leaderifyresource.record.response.TagCategoryResponse;
 import jv.example.leaderifyresource.repository.LeaderboardRepository;
 import jv.example.leaderifyresource.repository.TagCategoryRepository;
@@ -28,7 +30,15 @@ public class TagCategoryService {
         tagCategory.setName(request.name());
         tagCategory.setDescription(request.description());
         tagCategory.setLeaderboard(leaderboard);
-        tagCategory.setTags(request.tags());
+
+        for(TagRequest tagRequest : request.tags()) {
+            Tag tag = new Tag();
+            tag.setName(tagRequest.name());
+            tag.setDescription(tagRequest.description());
+
+            tagCategory.addTag(tag);
+        }
+
         TagCategory savedTagCategory = tagCategoryRepository.save(tagCategory);
 
         return new TagCategoryResponse(
