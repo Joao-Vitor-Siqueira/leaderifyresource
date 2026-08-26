@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/viewMetricConfigs")
+@RequestMapping("/leaderboards/{leaderboardId}/views/{viewId}/metrics")
 public class ViewMetricConfigController {
     private final ViewMetricConfigService viewMetricConfigService;
 

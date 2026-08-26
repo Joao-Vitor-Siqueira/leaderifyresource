@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/viewTagConfigs")
+@RequestMapping("/leaderboards/{leaderboardId}/views/{viewId}/tags")
 public class ViewTagConfigController {
     private final ViewTagConfigService viewTagConfigService;
 

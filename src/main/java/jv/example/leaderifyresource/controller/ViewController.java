@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/leaderboards/{leaderboardId}/views")
 public class ViewController {
     private final ViewService viewService;
 

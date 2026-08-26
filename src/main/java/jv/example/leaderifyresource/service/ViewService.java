@@ -27,11 +27,6 @@ public class ViewService {
 
     @Transactional
     public ViewResponse createView(ViewRequest request) {
-        Optional<View> exists =
-                viewRepository.findByNameAndLeaderboardId(request.name(),request.leaderboardId());
-        if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(View.class.getSimpleName(), exists.get().getId());
-        }
         Leaderboard leaderboard = leaderboardRepository.findById(request.leaderboardId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         Leaderboard.class.getSimpleName(), request.leaderboardId()
@@ -40,6 +35,11 @@ public class ViewService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         UserLeaderboard.class.getSimpleName(), request.userLeaderboardId()
                 ));
+        Optional<View> exists =
+                viewRepository.findByNameAndLeaderboardId(request.name(),request.leaderboardId());
+        if (exists.isPresent()) {
+            throw new ResourceAlreadyExistsException(View.class.getSimpleName(), exists.get().getId());
+        }
 
         View view = new View();
         view.setLeaderboard(leaderboard);
