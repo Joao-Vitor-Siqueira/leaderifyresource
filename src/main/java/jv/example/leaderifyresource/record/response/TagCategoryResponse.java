@@ -7,7 +7,6 @@ import java.util.List;
 public record TagCategoryResponse(
         Long id,
         String name,
-        String description,
-        List<Tag> tags
+        String description
 ) {
 }

@@ -45,7 +45,7 @@ public class TagService {
                 savedTag.getId(),
                 savedTag.getName(),
                 savedTag.getDescription(),
-                savedTag.getTagCategory()
+                tagCategoryId
         );
     }
 
@@ -56,7 +56,7 @@ public class TagService {
                     tag.get().getId(),
                     tag.get().getName(),
                     tag.get().getDescription(),
-                    tag.get().getTagCategory()
+                    tag.get().getTagCategory().getId()
             );
         }
         throw new ResourceNotFoundException(Tag.class.getSimpleName(), id);
@@ -68,7 +68,7 @@ public class TagService {
                         tag.getId(),
                         tag.getName(),
                         tag.getDescription(),
-                        tag.getTagCategory()
+                        tag.getTagCategory().getId()
                 ));
     }
 
@@ -86,7 +86,7 @@ public class TagService {
                 tag.getId(),
                 tag.getName(),
                 tag.getDescription(),
-                tag.getTagCategory()
+                tag.getTagCategory().getId()
         );
     }
 

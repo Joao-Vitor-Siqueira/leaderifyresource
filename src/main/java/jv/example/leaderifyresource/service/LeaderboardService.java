@@ -67,10 +67,7 @@ public class LeaderboardService {
         return new LeaderboardResponse(
                 savedLeaderboard.getId(),
                 savedLeaderboard.getName(),
-                savedLeaderboard.getDescription(),
-                savedLeaderboard.getMetrics(),
-                savedLeaderboard.getEntries(),
-                savedLeaderboard.getTagCategories()
+                savedLeaderboard.getDescription()
         );
     }
 
@@ -83,10 +80,7 @@ public class LeaderboardService {
         return new LeaderboardResponse(
                 leaderboard.getId(),
                 leaderboard.getName(),
-                leaderboard.getDescription(),
-                leaderboard.getMetrics(),
-                leaderboard.getEntries(),
-                leaderboard.getTagCategories()
+                leaderboard.getDescription()
         );
     }
 
@@ -95,10 +89,7 @@ public class LeaderboardService {
                 .map(leaderboard -> new LeaderboardResponse(
                         leaderboard.getId(),
                         leaderboard.getName(),
-                        leaderboard.getDescription(),
-                        leaderboard.getMetrics(),
-                        leaderboard.getEntries(),
-                        leaderboard.getTagCategories()
+                        leaderboard.getDescription()
                 ));
     }
 
@@ -116,10 +107,7 @@ public class LeaderboardService {
         return new LeaderboardResponse(
                 leaderboard.getId(),
                 leaderboard.getName(),
-                leaderboard.getDescription(),
-                leaderboard.getMetrics(),
-                leaderboard.getEntries(),
-                leaderboard.getTagCategories()
+                leaderboard.getDescription()
         );
     }
 

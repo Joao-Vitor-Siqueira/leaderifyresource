@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/values")
+@RequestMapping("/leaderboards/{leaderboardId}/values")
 public class ValueController {
     private final ValueService valueService;
 

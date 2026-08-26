@@ -44,8 +44,7 @@ public class TagCategoryService {
         return new TagCategoryResponse(
                 savedTagCategory.getId(),
                 savedTagCategory.getName(),
-                savedTagCategory.getDescription(),
-                savedTagCategory.getTags()
+                savedTagCategory.getDescription()
         );
     }
 
@@ -57,8 +56,7 @@ public class TagCategoryService {
         return new TagCategoryResponse(
                 tagCategory.getId(),
                 tagCategory.getName(),
-                tagCategory.getDescription(),
-                tagCategory.getTags()
+                tagCategory.getDescription()
         );
     }
 
@@ -67,8 +65,7 @@ public class TagCategoryService {
                 .map(tagCategory -> new TagCategoryResponse(
                         tagCategory.getId(),
                         tagCategory.getName(),
-                        tagCategory.getDescription(),
-                        tagCategory.getTags()
+                        tagCategory.getDescription()
                 ));
     }
 
@@ -85,8 +82,7 @@ public class TagCategoryService {
         return new TagCategoryResponse(
                 tagCategory.getId(),
                 tagCategory.getName(),
-                tagCategory.getDescription(),
-                tagCategory.getTags()
+                tagCategory.getDescription()
         );
     }
 
