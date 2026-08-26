@@ -7,7 +7,6 @@ import java.util.List;
 public record TagCategoryRequest(
         String name,
         String description,
-        List<Tag> tags,
-        Long LeaderboardId
+        List<Tag> tags
 ) {
 }

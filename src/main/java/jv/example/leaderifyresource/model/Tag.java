@@ -35,7 +35,4 @@ public class Tag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_category_id", nullable = false)
     private TagCategory tagCategory;
-
-    @OneToMany(mappedBy = "tag")
-    private List<EntryTag> entryTags;
 }

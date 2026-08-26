@@ -19,10 +19,10 @@ public class TagCategoryService {
     private final TagCategoryRepository tagCategoryRepository;
     private final LeaderboardRepository leaderboardRepository;
 
-    public TagCategoryResponse createTagCategory(TagCategoryRequest request) {
-        Leaderboard leaderboard = leaderboardRepository.findById(request.LeaderboardId())
+    public TagCategoryResponse createTagCategory(TagCategoryRequest request, Long leaderboardId) {
+        Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), request.LeaderboardId()
+                        Leaderboard.class.getSimpleName(), leaderboardId
                 ));
         TagCategory tagCategory = new TagCategory();
         tagCategory.setName(request.name());
