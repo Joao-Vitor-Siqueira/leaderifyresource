@@ -27,8 +27,8 @@ public class ViewMetricConfigController {
     }
 
     @PostMapping
-    public ResponseEntity<ViewMetricConfigResponse> createViewMetricConfig(@RequestBody ViewMetricConfigRequest request) {
-        return ResponseEntity.ok(viewMetricConfigService.createViewMetricConfig(request));
+    public ResponseEntity<ViewMetricConfigResponse> createViewMetricConfig(@RequestBody ViewMetricConfigRequest request, @PathVariable Long viewId) {
+        return ResponseEntity.ok(viewMetricConfigService.createViewMetricConfig(request, viewId));
     }
 
     @PatchMapping("/{id}")

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,13 +38,31 @@ public class View {
     @JoinColumn(name = "user_leaderboard_id", nullable = false)
     private UserLeaderboard userLeaderboard;
 
-    @OneToMany(mappedBy = "view")
-    private List<ViewMetricConfig> viewMetricConfigs;
+    @OneToMany(
+            mappedBy = "view",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ViewMetricConfig> viewMetricConfigs = new ArrayList<>();
 
-    @OneToMany(mappedBy = "view")
-    private List<ViewTagConfig> viewTagConfigs;
+    @OneToMany(
+            mappedBy = "view",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ViewTagConfig> viewTagConfigs = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Visibility visibility;
+
+    public void addViewMetricConfig(ViewMetricConfig viewMetricConfig) {
+        viewMetricConfigs.add(viewMetricConfig);
+        viewMetricConfig.setView(this);
+    }
+
+    public void addViewTagConfig(ViewTagConfig viewTagConfig) {
+        viewTagConfigs.add(viewTagConfig);
+        viewTagConfig.setView(this);
+    }
 
 }

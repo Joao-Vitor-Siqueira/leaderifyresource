@@ -27,8 +27,8 @@ public class ViewTagConfigController {
     }
 
     @PostMapping
-    public ResponseEntity<ViewTagConfigResponse> createViewTagConfig(@RequestBody ViewTagConfigRequest request) {
-        return ResponseEntity.ok(viewTagConfigService.createViewTagConfig(request));
+    public ResponseEntity<ViewTagConfigResponse> createViewTagConfig(@RequestBody ViewTagConfigRequest request, @PathVariable Long viewId) {
+        return ResponseEntity.ok(viewTagConfigService.createViewTagConfig(request, viewId));
     }
 
     @PatchMapping("/{id}")

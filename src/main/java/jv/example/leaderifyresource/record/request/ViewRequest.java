@@ -8,10 +8,9 @@ import java.util.List;
 
 public record ViewRequest(
         String name,
-        Long leaderboardId,
         Long userLeaderboardId,
-        List<ViewMetricConfig> viewMetricConfigs,
-        List<ViewTagConfig> viewTagConfigs,
+        List<ViewMetricConfigRequest> viewMetricConfigs,
+        List<ViewTagConfigRequest> viewTagConfigs,
         Visibility visibility
 ) {
 }
