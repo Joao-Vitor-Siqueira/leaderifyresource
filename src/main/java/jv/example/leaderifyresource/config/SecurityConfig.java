@@ -49,7 +49,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "/users/register"
+                                "/users/register",
+                                "/users/login"
                         ).permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**",

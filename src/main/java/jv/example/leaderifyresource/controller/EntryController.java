@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/entries")
+@RequestMapping("/leaderboards/{leaderboardId}/entries")
 public class EntryController {
     private final EntryService entryService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntryResponse> getEntry(@PathVariable Long id){
+    public ResponseEntity<EntryResponse> getEntry(@PathVariable Long id) {
         return ResponseEntity.ok(entryService.findEntryById(id));
     }
 
@@ -27,8 +27,8 @@ public class EntryController {
     }
 
     @PostMapping
-    public ResponseEntity<EntryResponse> createEntry(EntryRequest request) {
-        return ResponseEntity.ok(entryService.createEntry(request));
+    public ResponseEntity<EntryResponse> createEntry(EntryRequest request, @PathVariable Long leaderboardId) {
+        return ResponseEntity.ok(entryService.createEntry(request, leaderboardId));
     }
 
     @PatchMapping("/{id}")

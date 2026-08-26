@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,12 +25,30 @@ public class Leaderboard extends BaseEntity {
     @Column
     private String description;
 
-    @OneToMany(mappedBy = "leaderboard")
-    private List<Metric> metrics;
+    @OneToMany(
+            mappedBy = "leaderboard",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Metric> metrics = new ArrayList<>();
 
-    @OneToMany(mappedBy = "leaderboard")
-    private List<Entry> entries;
+    @OneToMany(
+            mappedBy = "leaderboard",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Entry> entries = new ArrayList<>();
 
     @OneToMany(mappedBy = "leaderboard")
     private List<TagCategory> tagCategories;
+
+    public void addMetric(Metric metric) {
+        metrics.add(metric);
+        metric.setLeaderboard(this);
+    }
+
+    public void addEntry(Entry entry) {
+        entries.add(entry);
+        entry.setLeaderboard(this);
+    }
 }
