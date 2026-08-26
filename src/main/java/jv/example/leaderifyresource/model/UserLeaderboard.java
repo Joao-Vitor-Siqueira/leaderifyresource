@@ -9,24 +9,33 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
-@Table(name = "user_leaderboard")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(
+        name = "user_leaderboard",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_user_leaderboard_pair",
+                        columnNames = {"user_id", "leaderboard_id"}
+                )
+        }
+)
 public class UserLeaderboard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "leaderboard_id", nullable = false)
     private Leaderboard leaderboard;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     @Column(name = "joined_at", nullable = false, updatable = false)

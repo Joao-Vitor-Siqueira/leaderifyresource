@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "metric")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "metric")
 public class Metric {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,11 +18,11 @@ public class Metric {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leaderboard_id")
+    @JoinColumn(name = "leaderboard_id",  nullable = false)
     private Leaderboard leaderboard;
 
 }

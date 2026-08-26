@@ -9,10 +9,18 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "entry")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(
+        name = "entry",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_entry_pair",
+                        columnNames = {"name", "leaderboard_id"}
+                )
+        }
+)
 public class Entry extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,11 +29,11 @@ public class Entry extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leaderboard_id")
+    @JoinColumn(name = "leaderboard_id", nullable = false)
     private Leaderboard leaderboard;
 
     @OneToMany(mappedBy = "entry")

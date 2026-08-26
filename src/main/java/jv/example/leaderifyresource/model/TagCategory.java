@@ -8,10 +8,10 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "tag_category")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "tag_category")
 public class TagCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +20,11 @@ public class TagCategory {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leaderboard_id")
+    @JoinColumn(name = "leaderboard_id", nullable = false)
     private Leaderboard leaderboard;
 
     @OneToMany(mappedBy = "tagCategory")

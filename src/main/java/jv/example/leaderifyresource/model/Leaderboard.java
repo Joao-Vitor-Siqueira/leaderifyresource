@@ -9,10 +9,10 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "leaderboard")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "leaderboard")
 public class Leaderboard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class Leaderboard extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @OneToMany(mappedBy = "leaderboard")

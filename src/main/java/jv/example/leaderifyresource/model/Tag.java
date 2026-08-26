@@ -8,6 +8,9 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(
         name = "tag",
         uniqueConstraints = {
@@ -17,9 +20,6 @@ import java.util.List;
                 )
         }
 )
-@Getter
-@Setter
-@NoArgsConstructor
 public class Tag {
 
     @Id
@@ -29,7 +29,7 @@ public class Tag {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)

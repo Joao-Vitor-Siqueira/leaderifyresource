@@ -9,6 +9,9 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(
         name = "view",
         uniqueConstraints = {
@@ -18,9 +21,6 @@ import java.util.List;
                 )
         }
 )
-@Getter
-@Setter
-@NoArgsConstructor
 public class View {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +33,8 @@ public class View {
     @JoinColumn(name = "leaderboard_id", nullable = false)
     private Leaderboard leaderboard;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_leaderboard_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_leaderboard_id", nullable = false)
     private UserLeaderboard userLeaderboard;
 
     @OneToMany(mappedBy = "view")
