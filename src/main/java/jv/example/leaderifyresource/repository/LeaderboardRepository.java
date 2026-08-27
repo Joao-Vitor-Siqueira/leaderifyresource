@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LeaderboardRepository extends JpaRepository<Leaderboard, Long> {
     boolean existsByOwner_IdAndName(Long ownerId, String name);
+
 }

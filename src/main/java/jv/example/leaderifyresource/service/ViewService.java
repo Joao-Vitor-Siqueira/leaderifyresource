@@ -5,9 +5,7 @@ import jv.example.leaderifyresource.exception.AccessDeniedException;
 import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.*;
-import jv.example.leaderifyresource.record.request.ViewMetricConfigRequest;
 import jv.example.leaderifyresource.record.request.ViewRequest;
-import jv.example.leaderifyresource.record.request.ViewTagConfigRequest;
 import jv.example.leaderifyresource.record.response.ViewResponse;
 import jv.example.leaderifyresource.repository.*;
 import jv.example.leaderifyresource.utils.Role;
@@ -26,11 +24,7 @@ public class ViewService {
     private final UserLeaderboardRepository userLeaderboardRepository;
 
     @Transactional
-    public ViewResponse createView(ViewRequest request, Long leaderboardId) {
-        Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), leaderboardId
-                ));
+    public ViewResponse createView(ViewRequest request, Long userLeaderboardId) {
         UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(request.userLeaderboardId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         UserLeaderboard.class.getSimpleName(), request.userLeaderboardId()
@@ -41,13 +35,12 @@ public class ViewService {
             throw new AccessDeniedException(View.class.getSimpleName());
 
         Optional<View> exists =
-                viewRepository.findByNameAndLeaderboardId(request.name(),leaderboardId);
+                viewRepository.findByNameAndUserLeaderboardId(request.name(),userLeaderboardId);
         if (exists.isPresent())
             throw new ResourceAlreadyExistsException(View.class.getSimpleName());
 
         View view = new View();
 
-        view.setLeaderboard(leaderboard);
         view.setName(request.name());
         view.setUserLeaderboard(userLeaderboard);
         view.setVisibility(request.visibility());

@@ -63,11 +63,16 @@ public class Leaderboard extends BaseEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<View> views = new ArrayList<>();
+    private List<UserLeaderboard> userLeaderboards = new ArrayList<>();
 
     public void addMetric(Metric metric) {
         metrics.add(metric);
         metric.setLeaderboard(this);
+    }
+
+    public void addUserLeaderboard(UserLeaderboard userLeaderboard) {
+        userLeaderboards.add(userLeaderboard);
+        userLeaderboard.setLeaderboard(this);
     }
 
     public void addEntry(Entry entry) {
@@ -80,8 +85,4 @@ public class Leaderboard extends BaseEntity {
         tagCategory.setLeaderboard(this);
     }
 
-    public void addView(View view) {
-        views.add(view);
-        view.setLeaderboard(this);
-    }
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/leaderboards/{leaderboardId}/views")
+@RequestMapping("/leaderboards/{leaderboardId}/members/{userLeaderboardId}/views")
 public class ViewController {
     private final ViewService viewService;
 
@@ -28,8 +28,8 @@ public class ViewController {
     }
 
     @PostMapping
-    public ResponseEntity<ViewResponse> createView(@Valid @RequestBody ViewRequest request, @PathVariable Long leaderboardId) {
-        return ResponseEntity.ok(viewService.createView(request, leaderboardId));
+    public ResponseEntity<ViewResponse> createView(@Valid @RequestBody ViewRequest request, @PathVariable Long userLeaderboardId) {
+        return ResponseEntity.ok(viewService.createView(request, userLeaderboardId));
     }
 
     @PatchMapping("/{id}")

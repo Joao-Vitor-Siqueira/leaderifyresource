@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,12 +36,24 @@ public class UserLeaderboard {
     @JoinColumn(name = "leaderboard_id", nullable = false)
     private Leaderboard leaderboard;
 
+    @OneToMany(
+            mappedBy = "userLeaderboard",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<View> views = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
     @Column(name = "joined_at", nullable = false, updatable = false)
     private Instant joinedAt;
+
+    public void addView(View view) {
+        views.add(view);
+        view.setUserLeaderboard(this);
+    }
 
     @PrePersist
     protected void onCreate() {

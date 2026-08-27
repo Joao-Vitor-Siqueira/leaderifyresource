@@ -31,10 +31,6 @@ public class View {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "leaderboard_id", nullable = false)
-    private Leaderboard leaderboard;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_leaderboard_id", nullable = false)
     private UserLeaderboard userLeaderboard;
 
