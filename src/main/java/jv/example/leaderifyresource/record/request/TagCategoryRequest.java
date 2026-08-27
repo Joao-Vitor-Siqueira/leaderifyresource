@@ -6,7 +6,6 @@ import java.util.List;
 
 public record TagCategoryRequest(
         String name,
-        String description,
-        List<TagRequest> tags
+        String description
 ) {
 }

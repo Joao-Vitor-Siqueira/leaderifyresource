@@ -31,15 +31,6 @@ public class TagCategoryService {
         tagCategory.setDescription(request.description());
         tagCategory.setLeaderboard(leaderboard);
 
-
-        for(TagRequest tagRequest : request.tags()) {
-            Tag tag = new Tag();
-            tag.setName(tagRequest.name());
-            tag.setDescription(tagRequest.description());
-
-            tagCategory.addTag(tag);
-        }
-
         TagCategory savedTagCategory = tagCategoryRepository.save(tagCategory);
 
         return new TagCategoryResponse(

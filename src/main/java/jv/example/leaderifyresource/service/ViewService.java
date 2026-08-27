@@ -24,8 +24,6 @@ public class ViewService {
     private final ViewRepository viewRepository;
     private final LeaderboardRepository leaderboardRepository;
     private final UserLeaderboardRepository userLeaderboardRepository;
-    private final TagCategoryRepository tagCategoryRepository;
-    private final MetricRepository metricRepository;
 
     @Transactional
     public ViewResponse createView(ViewRequest request, Long leaderboardId) {
@@ -47,37 +45,7 @@ public class ViewService {
         if (exists.isPresent())
             throw new ResourceAlreadyExistsException(View.class.getSimpleName());
 
-
         View view = new View();
-
-        for (ViewTagConfigRequest viewTagConfigRequest : request.viewTagConfigs()){
-            ViewTagConfig viewTagConfig = new ViewTagConfig();
-            TagCategory tagCategory = tagCategoryRepository.findById(viewTagConfigRequest.tagCategoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            TagCategory.class.getSimpleName(), viewTagConfigRequest.tagCategoryId()
-                    ));
-            viewTagConfig.setTagCategory(tagCategory);
-            viewTagConfig.setFilter(viewTagConfigRequest.filter());
-            viewTagConfig.setTarget(viewTagConfigRequest.target());
-
-            view.addViewTagConfig(viewTagConfig);
-        }
-
-        for (ViewMetricConfigRequest viewMetricConfigRequest : request.viewMetricConfigs()){
-            ViewMetricConfig viewMetricConfig = new ViewMetricConfig();
-            Metric metric = metricRepository.findById(viewMetricConfigRequest.metricId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            Metric.class.getSimpleName(), viewMetricConfigRequest.metricId()
-                    ));
-            viewMetricConfig.setMetric(metric);
-            viewMetricConfig.setVisibility(viewMetricConfigRequest.visibility());
-            viewMetricConfig.setSort(viewMetricConfigRequest.sort());
-            viewMetricConfig.setNumericFilter(viewMetricConfigRequest.numericFilter());
-            viewMetricConfig.setTarget(viewMetricConfigRequest.target());
-            viewMetricConfig.setPosition(viewMetricConfigRequest.position());
-
-            view.addViewMetricConfig(viewMetricConfig);
-        }
 
         view.setLeaderboard(leaderboard);
         view.setName(request.name());

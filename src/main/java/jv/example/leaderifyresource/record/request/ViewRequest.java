@@ -10,9 +10,6 @@ import java.util.List;
 public record ViewRequest(
         String name,
         Long userLeaderboardId,
-        @NotEmpty(message = "A view must contain at least one metric configuration")
-        List<ViewMetricConfigRequest> viewMetricConfigs,
-        List<ViewTagConfigRequest> viewTagConfigs,
         Visibility visibility
 ) {
 }
