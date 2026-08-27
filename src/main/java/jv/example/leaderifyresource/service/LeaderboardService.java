@@ -13,20 +13,15 @@ import jv.example.leaderifyresource.utils.Role;
 import jv.example.leaderifyresource.utils.Sort;
 import jv.example.leaderifyresource.utils.Visibility;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class LeaderboardService {
     private final LeaderboardRepository leaderboardRepository;
-    private final UserLeaderboardRepository userLeaderboardRepository;
     private final UserRepository userRepository;
-    private final ViewRepository viewRepository;
     private final ViewMetricConfigRepository viewMetricConfigRepository;
 
     @Transactional
@@ -130,6 +125,10 @@ public class LeaderboardService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         Leaderboard.class.getSimpleName(), id
                 ));
+
+        if(!leaderboard.getOwner().getId().equals(authenticatedUserId)){
+            throw new AccessDeniedException(Leaderboard.class.getSimpleName());
+        }
 
         viewMetricConfigRepository.deleteAllByLeaderboardId(id);
         leaderboardRepository.delete(leaderboard);
