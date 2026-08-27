@@ -1,5 +1,6 @@
 package jv.example.leaderifyresource.controller;
 
+import jakarta.validation.Valid;
 import jv.example.leaderifyresource.record.request.ViewRequest;
 import jv.example.leaderifyresource.record.response.ViewResponse;
 import jv.example.leaderifyresource.service.ViewService;
@@ -27,7 +28,7 @@ public class ViewController {
     }
 
     @PostMapping
-    public ResponseEntity<ViewResponse> createView(@RequestBody ViewRequest request, @PathVariable Long leaderboardId) {
+    public ResponseEntity<ViewResponse> createView(@Valid @RequestBody ViewRequest request, @PathVariable Long leaderboardId) {
         return ResponseEntity.ok(viewService.createView(request, leaderboardId));
     }
 

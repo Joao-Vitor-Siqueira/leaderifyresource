@@ -45,7 +45,7 @@ public class ViewService {
         Optional<View> exists =
                 viewRepository.findByNameAndLeaderboardId(request.name(),leaderboardId);
         if (exists.isPresent())
-            throw new ResourceAlreadyExistsException(View.class.getSimpleName(), exists.get().getId());
+            throw new ResourceAlreadyExistsException(View.class.getSimpleName());
 
 
         View view = new View();
@@ -58,6 +58,7 @@ public class ViewService {
                     ));
             viewTagConfig.setTagCategory(tagCategory);
             viewTagConfig.setFilter(viewTagConfigRequest.filter());
+            viewTagConfig.setTarget(viewTagConfigRequest.target());
 
             view.addViewTagConfig(viewTagConfig);
         }

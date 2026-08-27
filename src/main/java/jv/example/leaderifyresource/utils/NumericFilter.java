@@ -7,4 +7,5 @@ public enum NumericFilter {
     LESS_THAN,
     GREATER_OR_EQUAL,
     LESS_OR_EQUAL,
+    NONE,
 }

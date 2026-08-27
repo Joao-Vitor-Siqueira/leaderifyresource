@@ -27,4 +27,7 @@ public class ViewTagConfig {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Filter filter;
+
+    @Column
+    private String target;
 }

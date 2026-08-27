@@ -38,7 +38,7 @@ public class EntryTagService {
         Optional<EntryTag> exists =
                 entryTagRepository.findByEntryIdAndTagId(request.entryId(),request.tagId());
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(EntryTag.class.getSimpleName(), exists.get().getId());
+            throw new ResourceAlreadyExistsException(EntryTag.class.getSimpleName());
         }
 
 

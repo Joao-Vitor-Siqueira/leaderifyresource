@@ -32,7 +32,7 @@ public class TagService {
         Optional<Tag> exists =
                 tagRepository.findByNameAndTagCategoryId(request.name(),tagCategoryId);
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(Tag.class.getSimpleName(), exists.get().getId());
+            throw new ResourceAlreadyExistsException(Tag.class.getSimpleName());
         }
 
         Tag tag = new Tag();

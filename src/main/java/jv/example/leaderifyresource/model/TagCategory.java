@@ -35,8 +35,20 @@ public class TagCategory {
     )
     private List<Tag> tags = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "tagCategory",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ViewTagConfig> viewTagConfigs = new ArrayList<>();
+
     public void addTag(Tag tag) {
         tags.add(tag);
         tag.setTagCategory(this);
+    }
+
+    public void addViewTagConfig(ViewTagConfig viewTagConfig) {
+        viewTagConfigs.add(viewTagConfig);
+        viewTagConfig.setTagCategory(this);
     }
 }

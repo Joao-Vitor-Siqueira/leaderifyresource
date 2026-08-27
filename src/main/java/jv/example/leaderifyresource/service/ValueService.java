@@ -43,7 +43,7 @@ public class ValueService {
         Optional<Value> exists =
                 valueRepository.findByMetricIdAndEntryId(request.metricId(), request.entryId());
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(Value.class.getSimpleName(), exists.get().getId());
+            throw new ResourceAlreadyExistsException(Value.class.getSimpleName());
         }
         Value value = new Value();
         value.setEntry(entry);

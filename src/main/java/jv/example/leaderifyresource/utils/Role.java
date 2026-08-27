@@ -1,7 +1,7 @@
 package jv.example.leaderifyresource.utils;
 
 public enum Role {
-    OWNER,
+    ADMIN,
     EDITOR,
     VIEWER,
 }

@@ -1,6 +1,9 @@
 package jv.example.leaderifyresource.service;
 
 import jakarta.transaction.Transactional;
+import jv.example.leaderifyresource.exception.AccessDeniedException;
+import jv.example.leaderifyresource.exception.BusinessRuleViolationException;
+import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.*;
 import jv.example.leaderifyresource.record.request.*;
@@ -8,11 +11,17 @@ import jv.example.leaderifyresource.record.response.LeaderboardResponse;
 import jv.example.leaderifyresource.repository.LeaderboardRepository;
 import jv.example.leaderifyresource.repository.UserLeaderboardRepository;
 import jv.example.leaderifyresource.repository.UserRepository;
+import jv.example.leaderifyresource.repository.ViewRepository;
 import jv.example.leaderifyresource.utils.Role;
+import jv.example.leaderifyresource.utils.Sort;
+import jv.example.leaderifyresource.utils.Visibility;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,9 +29,19 @@ public class LeaderboardService {
     private final LeaderboardRepository leaderboardRepository;
     private final UserLeaderboardRepository userLeaderboardRepository;
     private final UserRepository userRepository;
+    private final ViewRepository viewRepository;
 
     @Transactional
-    public LeaderboardResponse createLeaderboard(LeaderboardRequest request, Long authenticatedUserId) {
+    public LeaderboardResponse createLeaderboard(LeaderboardCreationRequest request, Long authenticatedUserId) {
+        if(request.metrics().size() != request.metricSorts().size()){
+            throw new BusinessRuleViolationException("Every metric must have a configuration");
+        }
+        if(leaderboardRepository.existsByOwner_IdAndName(authenticatedUserId, request.name())){
+            throw new ResourceAlreadyExistsException(Leaderboard.class.getSimpleName());
+        }
+
+        // Leaderboard and UserLeaderboard creation
+
         Leaderboard leaderboard = new Leaderboard();
 
         leaderboard.setName(request.name());
@@ -35,34 +54,38 @@ public class LeaderboardService {
             leaderboard.addMetric(metric);
         }
 
-        for (EntryRequest entryRequest : request.entries()) {
-            Entry entry = new Entry();
-            entry.setName(entryRequest.name());
-            entry.setDescription(entryRequest.description());
-            leaderboard.addEntry(entry);
-        }
+        User user = userRepository.getReferenceById(authenticatedUserId);
+        leaderboard.setOwner(user);
 
-        for (TagCategoryRequest  tagCategoryRequest : request.tagCategories()) {
-            TagCategory tagCategory = new TagCategory();
-            tagCategory.setName(tagCategoryRequest.name());
-            tagCategory.setDescription(tagCategoryRequest.description());
-            for(TagRequest tagRequest : tagCategoryRequest.tags()){
-                Tag tag = new Tag();
-                tag.setName(tagRequest.name());
-                tag.setDescription(tagRequest.description());
-                tagCategory.addTag(tag);
-            }
-            leaderboard.addTagCategory(tagCategory);
-        }
+        UserLeaderboard userLeaderboard = new UserLeaderboard();
+        userLeaderboard.setLeaderboard(leaderboard);
+        userLeaderboard.setUser(user);
+        userLeaderboard.setRole(Role.ADMIN);
 
         Leaderboard savedLeaderboard = leaderboardRepository.save(leaderboard);
-
-        User user = userRepository.getReferenceById(authenticatedUserId);
-        UserLeaderboard userLeaderboard = new UserLeaderboard();
-        userLeaderboard.setLeaderboard(savedLeaderboard);
-        userLeaderboard.setUser(user);
-        userLeaderboard.setRole(Role.OWNER);
         userLeaderboardRepository.save(userLeaderboard);
+
+        // Base View Creation
+
+        View view = new View();
+        view.setName(request.name());
+        view.setUserLeaderboard(userLeaderboard);
+        view.setLeaderboard(leaderboard);
+        view.setVisibility(Visibility.SHOW);
+
+        List<Metric> savedMetrics = savedLeaderboard.getMetrics();
+
+        for (int i = 0; i < request.metricSorts().size(); i++) {
+            Sort sort = request.metricSorts().get(i);
+            Metric metric = savedMetrics.get(i);
+            ViewMetricConfig viewMetricConfig = new ViewMetricConfig();
+            viewMetricConfig.setSort(sort);
+            viewMetricConfig.setMetric(metric);
+            viewMetricConfig.setPosition(i);
+            viewMetricConfig.setVisibility(Visibility.SHOW);
+            view.addViewMetricConfig(viewMetricConfig);
+        }
+        viewRepository.save(view);
 
         return new LeaderboardResponse(
                 savedLeaderboard.getId(),
@@ -94,11 +117,14 @@ public class LeaderboardService {
     }
 
     @Transactional
-    public LeaderboardResponse updateLeaderboard(Long id, LeaderboardRequest request) {
+    public LeaderboardResponse updateLeaderboard(Long id, LeaderboardPatchRequest request, Long authenticatedUserId) {
         Leaderboard leaderboard = leaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         Leaderboard.class.getSimpleName(), id
                 ));
+        if(!leaderboard.getOwner().getId().equals(authenticatedUserId)){
+            throw new AccessDeniedException(Leaderboard.class.getSimpleName());
+        }
 
         leaderboard.setName(request.name());
         leaderboard.setDescription(request.description());
@@ -112,12 +138,17 @@ public class LeaderboardService {
     }
 
     @Transactional
-    public void deleteLeaderboard(Long id) {
+    public void deleteLeaderboard(Long id, Long authenticatedUserId) {
         Leaderboard leaderboard = leaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         Leaderboard.class.getSimpleName(), id
                 ));
+        UserLeaderboard userLeaderboard = userLeaderboardRepository.findByUserIdAndLeaderboardId(authenticatedUserId, id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        UserLeaderboard.class.getSimpleName(), id
+                ));
 
+        userLeaderboardRepository.delete(userLeaderboard);
         leaderboardRepository.delete(leaderboard);
     }
 }

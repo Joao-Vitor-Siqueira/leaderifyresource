@@ -46,13 +46,14 @@ public class ViewTagConfigService {
         Optional<ViewTagConfig> exists =
                 viewTagConfigRepository.findByViewIdAndTagCategoryId(viewId, request.tagCategoryId());
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(ViewTagConfig.class.getSimpleName(), exists.get().getId());
+            throw new ResourceAlreadyExistsException(ViewTagConfig.class.getSimpleName());
         }
 
         ViewTagConfig viewTagConfig = new ViewTagConfig();
         viewTagConfig.setTagCategory(tagCategory);
         viewTagConfig.setView(view);
         viewTagConfig.setFilter(request.filter());
+        viewTagConfig.setTarget(request.target());
         ViewTagConfig savedViewTagConfig = viewTagConfigRepository.save(viewTagConfig);
 
         return new ViewTagConfigResponse(

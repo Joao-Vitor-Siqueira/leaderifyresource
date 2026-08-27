@@ -13,7 +13,15 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "leaderboard")
+@Table(
+        name = "leaderboard",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_leaderboard_owner_name",
+                        columnNames = {"owner_id", "name"}
+                )
+        }
+)
 public class Leaderboard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +32,10 @@ public class Leaderboard extends BaseEntity {
 
     @Column
     private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     @OneToMany(
             mappedBy = "leaderboard",
@@ -46,6 +58,13 @@ public class Leaderboard extends BaseEntity {
     )
     private List<TagCategory> tagCategories = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "leaderboard",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<View> views = new ArrayList<>();
+
     public void addMetric(Metric metric) {
         metrics.add(metric);
         metric.setLeaderboard(this);
@@ -59,5 +78,10 @@ public class Leaderboard extends BaseEntity {
     public void addTagCategory(TagCategory tagCategory) {
         tagCategories.add(tagCategory);
         tagCategory.setLeaderboard(this);
+    }
+
+    public void addView(View view) {
+        views.add(view);
+        view.setLeaderboard(this);
     }
 }
