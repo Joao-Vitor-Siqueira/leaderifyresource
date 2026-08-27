@@ -35,8 +35,8 @@ public class ViewService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         UserLeaderboard.class.getSimpleName(), request.userLeaderboardId()
                 ));
-        Role userRole = userLeaderboard.getRole();
 
+        Role userRole = userLeaderboard.getRole();
         if(userRole.equals(Role.VIEWER))
             throw new AccessDeniedException(View.class.getSimpleName());
 
