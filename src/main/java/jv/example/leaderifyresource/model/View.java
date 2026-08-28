@@ -17,8 +17,8 @@ import java.util.List;
         name = "view",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_view_leaderboard_name",
-                        columnNames = {"leaderboard_id", "name"}
+                        name = "uk_view_user_leaderboard_id",
+                        columnNames = {"user_leaderboard_id", "name"}
                 )
         }
 )

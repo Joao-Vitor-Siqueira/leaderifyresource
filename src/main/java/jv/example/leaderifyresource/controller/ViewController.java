@@ -34,8 +34,8 @@ public class ViewController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ViewResponse> updateView(@PathVariable Long id, @RequestBody ViewRequest request) {
-        return ResponseEntity.ok(viewService.updateView(id, request));
+    public ResponseEntity<ViewResponse> updateView(@PathVariable Long id, @RequestBody ViewRequest request, @PathVariable Long userLeaderboardId) {
+        return ResponseEntity.ok(viewService.updateView(id, request, userLeaderboardId));
     }
 
     @DeleteMapping("/{id}")

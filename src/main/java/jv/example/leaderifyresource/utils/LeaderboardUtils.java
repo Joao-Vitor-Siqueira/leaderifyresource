@@ -19,5 +19,4 @@ public final class LeaderboardUtils {
 
         return isLeaderboardOwner || (isViewOwner && isNotViewer);
     }
-
 }

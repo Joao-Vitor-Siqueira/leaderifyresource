@@ -11,6 +11,7 @@ import jv.example.leaderifyresource.record.response.ViewResponse;
 import jv.example.leaderifyresource.repository.*;
 import jv.example.leaderifyresource.utils.LeaderboardUtils;
 import jv.example.leaderifyresource.utils.Role;
+import jv.example.leaderifyresource.utils.Visibility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,9 +34,9 @@ public class ViewService {
                 ));
         Role userRole = userLeaderboard.getRole();
 
-        if(!LeaderboardUtils.canCreateView(userRole, userLeaderboardId)) {
+        if(!LeaderboardUtils.canCreateView(userRole, userLeaderboardId))
             throw new AccessDeniedException(View.class.getSimpleName());
-        }
+
 
         Optional<View> exists =
                 viewRepository.findByNameAndUserLeaderboardId(request.name(),userLeaderboardId);
@@ -78,7 +79,7 @@ public class ViewService {
     }
 
     @Transactional
-    public ViewResponse updateView(Long id, ViewRequest request) {
+    public ViewResponse updateView(Long id, ViewRequest request, Long userLeaderboardId) {
         View view = viewRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         View.class.getSimpleName(), id
@@ -88,12 +89,17 @@ public class ViewService {
         Long leaderboardOwnerId = view.getUserLeaderboard().getLeaderboard().getOwner().getId();
         Long viewOwnerId = view.getUserLeaderboard().getId();
 
-        if(!LeaderboardUtils.canUpdateOrDeleteView(userRole, viewOwnerId, leaderboardOwnerId)){
+        if(!LeaderboardUtils.canUpdateOrDeleteView(userRole, viewOwnerId, leaderboardOwnerId))
             throw new AccessDeniedException(View.class.getSimpleName());
-        }
+
+        Optional<View> exists =
+                viewRepository.findByNameAndUserLeaderboardId(request.name(),userLeaderboardId);
+        if (exists.isPresent())
+            throw new ResourceAlreadyExistsException(View.class.getSimpleName());
 
         view.setName(request.name());
-        view.setVisibility(request.visibility());
+        if(!view.isBase())
+            view.setVisibility(request.visibility());
 
         return new ViewResponse(
                 view.getId(),
@@ -113,13 +119,13 @@ public class ViewService {
         Long leaderboardOwnerId = view.getUserLeaderboard().getLeaderboard().getOwner().getId();
         Long viewOwnerId = view.getUserLeaderboard().getId();
 
-        if(!LeaderboardUtils.canUpdateOrDeleteView(userRole, viewOwnerId, leaderboardOwnerId)){
+        if(!LeaderboardUtils.canUpdateOrDeleteView(userRole, viewOwnerId, leaderboardOwnerId))
             throw new AccessDeniedException(View.class.getSimpleName());
-        }
 
-        if(view.isBase()){
+
+        if(view.isBase())
             throw new BusinessRuleViolationException("Cannot delete base view");
-        }
+
 
         viewRepository.delete(view);
     }
