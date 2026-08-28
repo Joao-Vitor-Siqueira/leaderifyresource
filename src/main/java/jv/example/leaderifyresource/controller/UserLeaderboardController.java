@@ -3,6 +3,7 @@ package jv.example.leaderifyresource.controller;
 import jv.example.leaderifyresource.record.request.UserLeaderboardRequest;
 import jv.example.leaderifyresource.record.response.UserLeaderboardResponse;
 import jv.example.leaderifyresource.service.UserLeaderboardService;
+import jv.example.leaderifyresource.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,18 +28,18 @@ public class UserLeaderboardController {
     }
 
     @PostMapping
-    public ResponseEntity<UserLeaderboardResponse> createUserLeaderboard(@RequestBody UserLeaderboardRequest request) {
-        return ResponseEntity.ok(userLeaderboardService.createUserLeaderboard(request));
+    public ResponseEntity<UserLeaderboardResponse> createUserLeaderboard(@RequestBody UserLeaderboardRequest request, @PathVariable Long leaderboardId) {
+        return ResponseEntity.ok(userLeaderboardService.createUserLeaderboard(request, leaderboardId, SecurityUtils.getCurrentUserId()));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserLeaderboardResponse> updateUserLeaderboard(@PathVariable Long id, @RequestBody UserLeaderboardRequest request) {
-        return ResponseEntity.ok(userLeaderboardService.updateUserLeaderboard(id, request));
+    public ResponseEntity<UserLeaderboardResponse> updateUserLeaderboard(@PathVariable Long id, @RequestBody UserLeaderboardRequest request, @PathVariable Long leaderboardId) {
+        return ResponseEntity.ok(userLeaderboardService.updateUserLeaderboard(id, request, leaderboardId, SecurityUtils.getCurrentUserId()));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUserLeaderboard(@PathVariable Long id){
-        userLeaderboardService.deleteUserLeaderboard(id);
+    public void deleteUserLeaderboard(@PathVariable Long id, @PathVariable Long leaderboardId){
+        userLeaderboardService.deleteUserLeaderboard(id, leaderboardId, SecurityUtils.getCurrentUserId());
     }
 }

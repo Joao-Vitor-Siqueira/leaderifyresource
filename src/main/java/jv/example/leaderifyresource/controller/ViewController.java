@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jv.example.leaderifyresource.record.request.ViewRequest;
 import jv.example.leaderifyresource.record.response.ViewResponse;
 import jv.example.leaderifyresource.service.ViewService;
+import jv.example.leaderifyresource.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +40,7 @@ public class ViewController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteView(@PathVariable Long id){
+    public void deleteView(@PathVariable Long id) {
         viewService.deleteView(id);
     }
 }

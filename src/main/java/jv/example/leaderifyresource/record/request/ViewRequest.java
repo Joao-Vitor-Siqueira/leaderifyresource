@@ -9,7 +9,6 @@ import java.util.List;
 
 public record ViewRequest(
         String name,
-        Long userLeaderboardId,
         Visibility visibility
 ) {
 }

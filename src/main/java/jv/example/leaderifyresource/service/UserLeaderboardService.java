@@ -1,6 +1,7 @@
 package jv.example.leaderifyresource.service;
 
 import jakarta.transaction.Transactional;
+import jv.example.leaderifyresource.exception.AccessDeniedException;
 import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.Leaderboard;
@@ -11,6 +12,8 @@ import jv.example.leaderifyresource.record.response.UserLeaderboardResponse;
 import jv.example.leaderifyresource.repository.LeaderboardRepository;
 import jv.example.leaderifyresource.repository.UserLeaderboardRepository;
 import jv.example.leaderifyresource.repository.UserRepository;
+import jv.example.leaderifyresource.utils.LeaderboardUtils;
+import jv.example.leaderifyresource.utils.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,16 +29,20 @@ public class UserLeaderboardService {
     private final LeaderboardRepository leaderboardRepository;
 
     @Transactional
-    public UserLeaderboardResponse createUserLeaderboard(UserLeaderboardRequest request) {
+    public UserLeaderboardResponse createUserLeaderboard(UserLeaderboardRequest request, Long leaderboardId, Long authenticatedUserId) {
+        Optional<UserLeaderboard> issuer = userLeaderboardRepository.findByUserIdAndLeaderboardId(authenticatedUserId,leaderboardId);
+        if(!issuer.isPresent() || !issuer.get().getRole().equals(Role.ADMIN)) {
+            throw new AccessDeniedException(UserLeaderboard.class.getSimpleName());
+        }
         Optional<UserLeaderboard> exists =
-                userLeaderboardRepository.findByUserIdAndLeaderboardId(request.userId(),request.leaderboardId());
+                userLeaderboardRepository.findByUserIdAndLeaderboardId(request.userId(),leaderboardId);
         if (exists.isPresent()) {
             throw new ResourceAlreadyExistsException(UserLeaderboard.class.getSimpleName());
         }
 
-        Leaderboard leaderboard = leaderboardRepository.findById(request.leaderboardId())
+        Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), request.leaderboardId()
+                        Leaderboard.class.getSimpleName(), leaderboardId
                 ));
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -46,7 +53,10 @@ public class UserLeaderboardService {
         UserLeaderboard userLeaderboard = new UserLeaderboard();
         userLeaderboard.setUser(user);
         userLeaderboard.setLeaderboard(leaderboard);
-        userLeaderboard.setRole(request.role());
+
+        boolean isOwner = issuer.get().getId().equals(leaderboard.getOwner().getId());
+        userLeaderboard.setRole(isOwner ? request.role() : Role.VIEWER);
+
         UserLeaderboard savedUserLeaderboard = userLeaderboardRepository.save(userLeaderboard);
 
         return new UserLeaderboardResponse(
@@ -81,7 +91,11 @@ public class UserLeaderboardService {
     }
 
     @Transactional
-    public UserLeaderboardResponse updateUserLeaderboard(Long id, UserLeaderboardRequest request) {
+    public UserLeaderboardResponse updateUserLeaderboard(Long id, UserLeaderboardRequest request, Long  leaderboardId, Long authenticatedUserId) {
+        Optional<UserLeaderboard> issuer = userLeaderboardRepository.findByUserIdAndLeaderboardId(authenticatedUserId,leaderboardId);
+        if(!issuer.isPresent() || !issuer.get().getLeaderboard().getOwner().getId().equals(authenticatedUserId)) {
+            throw new AccessDeniedException(UserLeaderboard.class.getSimpleName());
+        }
         UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         UserLeaderboard.class.getSimpleName(), id
@@ -98,7 +112,12 @@ public class UserLeaderboardService {
     }
 
     @Transactional
-    public void deleteUserLeaderboard(Long id) {
+    public void deleteUserLeaderboard(Long id, Long leaderboardId, Long authenticatedUserId) {
+        Optional<UserLeaderboard> issuer = userLeaderboardRepository.findByUserIdAndLeaderboardId(authenticatedUserId,leaderboardId);
+        if(!issuer.isPresent() || !issuer.get().getLeaderboard().getOwner().getId().equals(authenticatedUserId)) {
+            throw new AccessDeniedException(UserLeaderboard.class.getSimpleName());
+        }
+
         UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         UserLeaderboard.class.getSimpleName(), id
