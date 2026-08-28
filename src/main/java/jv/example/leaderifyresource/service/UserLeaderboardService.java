@@ -2,6 +2,7 @@ package jv.example.leaderifyresource.service;
 
 import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.exception.AccessDeniedException;
+import jv.example.leaderifyresource.exception.BusinessRuleViolationException;
 import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.Leaderboard;
@@ -53,9 +54,7 @@ public class UserLeaderboardService {
         UserLeaderboard userLeaderboard = new UserLeaderboard();
         userLeaderboard.setUser(user);
         userLeaderboard.setLeaderboard(leaderboard);
-
-        boolean isOwner = issuer.get().getId().equals(leaderboard.getOwner().getId());
-        userLeaderboard.setRole(isOwner ? request.role() : Role.VIEWER);
+        userLeaderboard.setRole(request.role());
 
         UserLeaderboard savedUserLeaderboard = userLeaderboardRepository.save(userLeaderboard);
 
@@ -93,13 +92,17 @@ public class UserLeaderboardService {
     @Transactional
     public UserLeaderboardResponse updateUserLeaderboard(Long id, UserLeaderboardRequest request, Long  leaderboardId, Long authenticatedUserId) {
         Optional<UserLeaderboard> issuer = userLeaderboardRepository.findByUserIdAndLeaderboardId(authenticatedUserId,leaderboardId);
-        if(!issuer.isPresent() || !issuer.get().getLeaderboard().getOwner().getId().equals(authenticatedUserId)) {
+        if(!issuer.isPresent() || !issuer.get().getRole().equals(Role.ADMIN)) {
             throw new AccessDeniedException(UserLeaderboard.class.getSimpleName());
         }
         UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         UserLeaderboard.class.getSimpleName(), id
                 ));
+
+        if(userLeaderboard.getUser().getId().equals(userLeaderboard.getLeaderboard().getOwner().getId())) {
+            throw new BusinessRuleViolationException("Cannot update roles for the leaderboard's owner");
+        }
 
         userLeaderboard.setRole(request.role());
 
@@ -117,11 +120,16 @@ public class UserLeaderboardService {
         if(!issuer.isPresent() || !issuer.get().getLeaderboard().getOwner().getId().equals(authenticatedUserId)) {
             throw new AccessDeniedException(UserLeaderboard.class.getSimpleName());
         }
-
         UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         UserLeaderboard.class.getSimpleName(), id
                 ));
+
+        Long ownerId =  userLeaderboard.getLeaderboard().getOwner().getId();
+        if(issuer.get().getId().equals(ownerId)) {
+            throw new BusinessRuleViolationException("Cannot delete the leaderboard's owner");
+        }
+
         userLeaderboardRepository.delete(userLeaderboard);
     }
 }
