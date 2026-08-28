@@ -34,6 +34,9 @@ public class View {
     @JoinColumn(name = "user_leaderboard_id", nullable = false)
     private UserLeaderboard userLeaderboard;
 
+    @Column(nullable = false)
+    private boolean base;
+
     @OneToMany(
             mappedBy = "view",
             cascade = CascadeType.ALL,

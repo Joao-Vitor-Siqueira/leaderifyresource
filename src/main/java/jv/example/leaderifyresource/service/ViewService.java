@@ -2,6 +2,7 @@ package jv.example.leaderifyresource.service;
 
 import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.exception.AccessDeniedException;
+import jv.example.leaderifyresource.exception.BusinessRuleViolationException;
 import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.*;
@@ -112,9 +113,12 @@ public class ViewService {
         Long leaderboardOwnerId = view.getUserLeaderboard().getLeaderboard().getOwner().getId();
         Long viewOwnerId = view.getUserLeaderboard().getId();
 
-
         if(!LeaderboardUtils.canUpdateOrDeleteView(userRole, viewOwnerId, leaderboardOwnerId)){
             throw new AccessDeniedException(View.class.getSimpleName());
+        }
+
+        if(view.isBase()){
+            throw new BusinessRuleViolationException("Cannot delete base view");
         }
 
         viewRepository.delete(view);

@@ -49,6 +49,7 @@ public class LeaderboardService {
         View view = new View();
         view.setName(request.name());
         view.setVisibility(Visibility.SHOW);
+        view.setBase(true);
 
         for (int i = 0; i < request.metricSorts().size(); i++) {
             Metric metric = new Metric();
