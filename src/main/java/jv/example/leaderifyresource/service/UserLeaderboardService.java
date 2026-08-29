@@ -9,12 +9,10 @@ import jv.example.leaderifyresource.model.Leaderboard;
 import jv.example.leaderifyresource.model.LeaderboardInvitation;
 import jv.example.leaderifyresource.model.User;
 import jv.example.leaderifyresource.model.UserLeaderboard;
-import jv.example.leaderifyresource.record.request.UserLeaderboardRequest;
 import jv.example.leaderifyresource.record.response.UserLeaderboardResponse;
 import jv.example.leaderifyresource.repository.LeaderboardRepository;
 import jv.example.leaderifyresource.repository.UserLeaderboardRepository;
 import jv.example.leaderifyresource.repository.UserRepository;
-import jv.example.leaderifyresource.utils.LeaderboardUtils;
 import jv.example.leaderifyresource.utils.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -90,7 +88,7 @@ public class UserLeaderboardService {
     }
 
     @Transactional
-    public UserLeaderboardResponse updateUserLeaderboard(Long id, UserLeaderboardRequest request, Long  leaderboardId, Long authenticatedUserId) {
+    public UserLeaderboardResponse updateUserLeaderboard(Long id, Role role, Long  leaderboardId, Long authenticatedUserId) {
         Optional<UserLeaderboard> issuer = userLeaderboardRepository.findByUserIdAndLeaderboardId(authenticatedUserId,leaderboardId);
         if(!issuer.isPresent() || !issuer.get().getRole().equals(Role.ADMIN)) {
             throw new AccessDeniedException(UserLeaderboard.class.getSimpleName());
@@ -106,11 +104,11 @@ public class UserLeaderboardService {
             throw new BusinessRuleViolationException("Cannot update roles for the leaderboard's owner");
         }
 
-        if(request.role().equals(Role.ADMIN) && !authenticatedUserId.equals(ownerId)) {
+        if(role.equals(Role.ADMIN) && !authenticatedUserId.equals(ownerId)) {
             throw new BusinessRuleViolationException("Only the owner of the leaderboard can promote or revoke administrators");
         }
 
-        userLeaderboard.setRole(request.role());
+        userLeaderboard.setRole(role);
 
         return new UserLeaderboardResponse(
                 userLeaderboard.getId(),
@@ -141,6 +139,20 @@ public class UserLeaderboardService {
             throw new BusinessRuleViolationException("Cannot delete the leaderboard's owner");
         }
 
+        userLeaderboardRepository.delete(userLeaderboard);
+    }
+
+    public void leaveLeaderboard(Long id, Long authenticatedUserId) {
+        UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        UserLeaderboard.class.getSimpleName(), id
+                ));
+        if(authenticatedUserId.equals(userLeaderboard.getLeaderboard().getOwner().getId())) {
+            throw new BusinessRuleViolationException("The owner cannot leave the leaderboard");
+        }
+        if(!userLeaderboard.getUser().getId().equals(authenticatedUserId)){
+            throw new AccessDeniedException(UserLeaderboard.class.getSimpleName());
+        }
         userLeaderboardRepository.delete(userLeaderboard);
     }
 }
