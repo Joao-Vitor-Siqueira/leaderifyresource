@@ -27,11 +27,6 @@ public class UserLeaderboardController {
         return ResponseEntity.ok(userLeaderboardService.listUserLeaderboards(pageable));
     }
 
-    @PostMapping
-    public ResponseEntity<UserLeaderboardResponse> createUserLeaderboard(@RequestBody UserLeaderboardRequest request, @PathVariable Long leaderboardId) {
-        return ResponseEntity.ok(userLeaderboardService.createUserLeaderboard(request, leaderboardId, SecurityUtils.getCurrentUserId()));
-    }
-
     @PatchMapping("/{id}")
     public ResponseEntity<UserLeaderboardResponse> updateUserLeaderboard(@PathVariable Long id, @RequestBody UserLeaderboardRequest request, @PathVariable Long leaderboardId) {
         return ResponseEntity.ok(userLeaderboardService.updateUserLeaderboard(id, request, leaderboardId, SecurityUtils.getCurrentUserId()));
