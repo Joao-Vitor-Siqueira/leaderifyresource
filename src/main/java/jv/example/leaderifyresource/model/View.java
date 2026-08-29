@@ -6,21 +6,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(
         name = "view",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_view_leaderboard_name",
-                        columnNames = {"leaderboard_id", "name"}
+                        name = "uk_view_user_leaderboard_id",
+                        columnNames = {"user_leaderboard_id", "name"}
                 )
         }
 )
-@Getter
-@Setter
-@NoArgsConstructor
 public class View {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,20 +31,37 @@ public class View {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "leaderboard_id", nullable = false)
-    private Leaderboard leaderboard;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_leaderboard_id")
+    @JoinColumn(name = "user_leaderboard_id", nullable = false)
     private UserLeaderboard userLeaderboard;
 
-    @OneToMany(mappedBy = "view")
-    private List<ViewMetricConfig> viewMetricConfigs;
+    @Column(nullable = false)
+    private boolean base;
 
-    @OneToMany(mappedBy = "view")
-    private List<ViewTagConfig> viewTagConfigs;
+    @OneToMany(
+            mappedBy = "view",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ViewMetricConfig> viewMetricConfigs = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "view",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ViewTagConfig> viewTagConfigs = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Visibility visibility;
+
+    public void addViewMetricConfig(ViewMetricConfig viewMetricConfig) {
+        viewMetricConfigs.add(viewMetricConfig);
+        viewMetricConfig.setView(this);
+    }
+
+    public void addViewTagConfig(ViewTagConfig viewTagConfig) {
+        viewTagConfigs.add(viewTagConfig);
+        viewTagConfig.setView(this);
+    }
 
 }

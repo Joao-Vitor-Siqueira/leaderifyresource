@@ -31,7 +31,7 @@ public class UserRelationshipService {
         Optional<UserRelationship> exists =
                 userRelationshipRepository.findByUserHighIdAndUserLowId(userHighId, userLowId);
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(UserRelationship.class.getSimpleName(), exists.get().getId());
+            throw new ResourceAlreadyExistsException(UserRelationship.class.getSimpleName());
         }
 
         User userHigh = userRepository.findById(userHighId)

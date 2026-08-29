@@ -3,8 +3,10 @@ package jv.example.leaderifyresource.service;
 import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.Leaderboard;
+import jv.example.leaderifyresource.model.Tag;
 import jv.example.leaderifyresource.model.TagCategory;
 import jv.example.leaderifyresource.record.request.TagCategoryRequest;
+import jv.example.leaderifyresource.record.request.TagRequest;
 import jv.example.leaderifyresource.record.response.TagCategoryResponse;
 import jv.example.leaderifyresource.repository.LeaderboardRepository;
 import jv.example.leaderifyresource.repository.TagCategoryRepository;
@@ -19,23 +21,22 @@ public class TagCategoryService {
     private final TagCategoryRepository tagCategoryRepository;
     private final LeaderboardRepository leaderboardRepository;
 
-    public TagCategoryResponse createTagCategory(TagCategoryRequest request) {
-        Leaderboard leaderboard = leaderboardRepository.findById(request.LeaderboardId())
+    public TagCategoryResponse createTagCategory(TagCategoryRequest request, Long leaderboardId) {
+        Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), request.LeaderboardId()
+                        Leaderboard.class.getSimpleName(), leaderboardId
                 ));
         TagCategory tagCategory = new TagCategory();
         tagCategory.setName(request.name());
         tagCategory.setDescription(request.description());
         tagCategory.setLeaderboard(leaderboard);
-        tagCategory.setTags(request.tags());
+
         TagCategory savedTagCategory = tagCategoryRepository.save(tagCategory);
 
         return new TagCategoryResponse(
                 savedTagCategory.getId(),
                 savedTagCategory.getName(),
-                savedTagCategory.getDescription(),
-                savedTagCategory.getTags()
+                savedTagCategory.getDescription()
         );
     }
 
@@ -47,8 +48,7 @@ public class TagCategoryService {
         return new TagCategoryResponse(
                 tagCategory.getId(),
                 tagCategory.getName(),
-                tagCategory.getDescription(),
-                tagCategory.getTags()
+                tagCategory.getDescription()
         );
     }
 
@@ -57,8 +57,7 @@ public class TagCategoryService {
                 .map(tagCategory -> new TagCategoryResponse(
                         tagCategory.getId(),
                         tagCategory.getName(),
-                        tagCategory.getDescription(),
-                        tagCategory.getTags()
+                        tagCategory.getDescription()
                 ));
     }
 
@@ -75,8 +74,7 @@ public class TagCategoryService {
         return new TagCategoryResponse(
                 tagCategory.getId(),
                 tagCategory.getName(),
-                tagCategory.getDescription(),
-                tagCategory.getTags()
+                tagCategory.getDescription()
         );
     }
 

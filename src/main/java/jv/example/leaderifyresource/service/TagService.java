@@ -4,8 +4,10 @@ import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.Tag;
+import jv.example.leaderifyresource.model.TagCategory;
 import jv.example.leaderifyresource.record.request.TagRequest;
 import jv.example.leaderifyresource.record.response.TagResponse;
+import jv.example.leaderifyresource.repository.TagCategoryRepository;
 import jv.example.leaderifyresource.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,27 +20,32 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TagService {
     private final TagRepository tagRepository;
+    private final TagCategoryRepository tagCategoryRepository;
 
     @Transactional
-    public TagResponse createTag(TagRequest request) {
+    public TagResponse createTag(TagRequest request, Long tagCategoryId) {
+        TagCategory tagCategory = tagCategoryRepository.findById(tagCategoryId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        TagCategory.class.getSimpleName(), tagCategoryId
+                ));
+
         Optional<Tag> exists =
-                tagRepository.findByNameAndTagCategoryId(request.name(),request.tagCategory().getId());
+                tagRepository.findByNameAndTagCategoryId(request.name(),tagCategoryId);
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(Tag.class.getSimpleName(), exists.get().getId());
+            throw new ResourceAlreadyExistsException(Tag.class.getSimpleName());
         }
+
         Tag tag = new Tag();
         tag.setName(request.name());
         tag.setDescription(request.description());
-        tag.setTagCategory(request.tagCategory());
-        tag.setEntryTags(request.entryTags());
+        tag.setTagCategory(tagCategory);
         Tag savedTag = tagRepository.save(tag);
 
         return new TagResponse(
                 savedTag.getId(),
                 savedTag.getName(),
                 savedTag.getDescription(),
-                savedTag.getTagCategory(),
-                savedTag.getEntryTags()
+                tagCategoryId
         );
     }
 
@@ -49,8 +56,7 @@ public class TagService {
                     tag.get().getId(),
                     tag.get().getName(),
                     tag.get().getDescription(),
-                    tag.get().getTagCategory(),
-                    tag.get().getEntryTags()
+                    tag.get().getTagCategory().getId()
             );
         }
         throw new ResourceNotFoundException(Tag.class.getSimpleName(), id);
@@ -62,8 +68,7 @@ public class TagService {
                         tag.getId(),
                         tag.getName(),
                         tag.getDescription(),
-                        tag.getTagCategory(),
-                        tag.getEntryTags()
+                        tag.getTagCategory().getId()
                 ));
     }
 
@@ -76,15 +81,12 @@ public class TagService {
 
         tag.setName(request.name());
         tag.setDescription(request.description());
-        tag.setTagCategory(request.tagCategory());
-        tag.setEntryTags(request.entryTags());
 
         return new TagResponse(
                 tag.getId(),
                 tag.getName(),
                 tag.getDescription(),
-                tag.getTagCategory(),
-                tag.getEntryTags()
+                tag.getTagCategory().getId()
         );
     }
 

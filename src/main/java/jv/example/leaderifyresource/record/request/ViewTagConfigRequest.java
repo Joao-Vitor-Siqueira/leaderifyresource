@@ -1,10 +1,12 @@
 package jv.example.leaderifyresource.record.request;
 
+import jakarta.validation.constraints.NotNull;
 import jv.example.leaderifyresource.utils.Filter;
 
 public record ViewTagConfigRequest(
-        Long viewId,
+        @NotNull(message = "Tag Category Id must not be null")
         Long tagCategoryId,
-        Filter filter
+        Filter filter,
+        String target
 ) {
 }

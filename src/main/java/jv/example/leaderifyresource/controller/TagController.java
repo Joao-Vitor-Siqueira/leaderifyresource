@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/tags")
 @RequiredArgsConstructor
+@RequestMapping("/tagCategories/{tagCategoryId}/tags")
 public class TagController {
     private final TagService tagService;
 
@@ -27,8 +27,8 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<TagResponse> createTag(TagRequest request) {
-        return ResponseEntity.ok(tagService.createTag(request));
+    public ResponseEntity<TagResponse> createTag(@RequestBody TagRequest request, @PathVariable Long tagCategoryId) {
+        return ResponseEntity.ok(tagService.createTag(request, tagCategoryId));
     }
 
     @PatchMapping("/{id}")

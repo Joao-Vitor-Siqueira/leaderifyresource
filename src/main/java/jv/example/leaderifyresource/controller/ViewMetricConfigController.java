@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/viewMetricConfigs")
+@RequestMapping("/leaderboards/{leaderboardId}/views/{viewId}/metrics")
 public class ViewMetricConfigController {
     private final ViewMetricConfigService viewMetricConfigService;
 
@@ -27,8 +27,8 @@ public class ViewMetricConfigController {
     }
 
     @PostMapping
-    public ResponseEntity<ViewMetricConfigResponse> createViewMetricConfig(ViewMetricConfigRequest request) {
-        return ResponseEntity.ok(viewMetricConfigService.createViewMetricConfig(request));
+    public ResponseEntity<ViewMetricConfigResponse> createViewMetricConfig(@RequestBody ViewMetricConfigRequest request, @PathVariable Long viewId) {
+        return ResponseEntity.ok(viewMetricConfigService.createViewMetricConfig(request, viewId));
     }
 
     @PatchMapping("/{id}")

@@ -10,6 +10,9 @@ import lombok.Setter;
 import java.util.Objects;
 
 @Entity
+@Setter
+@NoArgsConstructor
+@Getter
 @Table(
         name = "user_relationship",
         uniqueConstraints = {
@@ -19,9 +22,6 @@ import java.util.Objects;
                 )
         }
 )
-@Getter
-@Setter
-@NoArgsConstructor
 public class UserRelationship extends BaseEntity {
 
     @Id

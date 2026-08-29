@@ -1,6 +1,7 @@
 package jv.example.leaderifyresource.service;
 
 import jakarta.transaction.Transactional;
+import jv.example.leaderifyresource.exception.AccessDeniedException;
 import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.TagCategory;
@@ -11,6 +12,7 @@ import jv.example.leaderifyresource.record.response.ViewTagConfigResponse;
 import jv.example.leaderifyresource.repository.TagCategoryRepository;
 import jv.example.leaderifyresource.repository.ViewRepository;
 import jv.example.leaderifyresource.repository.ViewTagConfigRepository;
+import jv.example.leaderifyresource.utils.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,31 +28,36 @@ public class ViewTagConfigService {
     private final TagCategoryRepository tagCategoryRepository;
 
     @Transactional
-    public ViewTagConfigResponse createViewTagConfig(ViewTagConfigRequest request) {
-        Optional<ViewTagConfig> exists =
-                viewTagConfigRepository.findByViewIdAndTagCategoryId(request.viewId(), request.tagCategoryId());
-        if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(ViewTagConfig.class.getSimpleName(), exists.get().getId());
-        }
+    public ViewTagConfigResponse createViewTagConfig(ViewTagConfigRequest request, Long viewId) {
         View view =
-                viewRepository.findById(request.viewId()).orElseThrow(() -> new ResourceNotFoundException(
-                        View.class.getSimpleName(), request.viewId()
+                viewRepository.findById(viewId).orElseThrow(() -> new ResourceNotFoundException(
+                        View.class.getSimpleName(), viewId
                 ));
+
+        Role userRole = view.getUserLeaderboard().getRole();
+        if(userRole.equals(Role.VIEWER))
+            throw new AccessDeniedException(View.class.getSimpleName());
+
         TagCategory tagCategory = tagCategoryRepository.findById(request.tagCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         TagCategory.class.getSimpleName(), request.tagCategoryId()
                 ));
 
+        Optional<ViewTagConfig> exists =
+                viewTagConfigRepository.findByViewIdAndTagCategoryId(viewId, request.tagCategoryId());
+        if (exists.isPresent()) {
+            throw new ResourceAlreadyExistsException(ViewTagConfig.class.getSimpleName());
+        }
+
         ViewTagConfig viewTagConfig = new ViewTagConfig();
         viewTagConfig.setTagCategory(tagCategory);
         viewTagConfig.setView(view);
         viewTagConfig.setFilter(request.filter());
+        viewTagConfig.setTarget(request.target());
         ViewTagConfig savedViewTagConfig = viewTagConfigRepository.save(viewTagConfig);
 
         return new ViewTagConfigResponse(
                 savedViewTagConfig.getId(),
-                view.getId(),
-                tagCategory.getId(),
                 request.filter()
         );
     }
@@ -62,8 +69,6 @@ public class ViewTagConfigService {
                 ));
         return new ViewTagConfigResponse(
                 viewTagConfig.getId(),
-                viewTagConfig.getView().getId(),
-                viewTagConfig.getTagCategory().getId(),
                 viewTagConfig.getFilter()
         );
     }
@@ -72,8 +77,6 @@ public class ViewTagConfigService {
         return viewTagConfigRepository.findAll(pageable)
                 .map(viewTagConfig -> new ViewTagConfigResponse(
                         viewTagConfig.getId(),
-                        viewTagConfig.getView().getId(),
-                        viewTagConfig.getTagCategory().getId(),
                         viewTagConfig.getFilter()
                 ));
     }
@@ -89,8 +92,6 @@ public class ViewTagConfigService {
 
         return new ViewTagConfigResponse(
                 viewTagConfig.getId(),
-                viewTagConfig.getView().getId(),
-                viewTagConfig.getTagCategory().getId(),
                 viewTagConfig.getFilter()
         );
     }

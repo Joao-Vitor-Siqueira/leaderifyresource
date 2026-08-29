@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/metrics")
+@RequestMapping("/leaderboards/{leaderboardId}/metrics")
 public class MetricController {
     private final MetricService metricService;
 
@@ -27,8 +27,8 @@ public class MetricController {
     }
 
     @PostMapping
-    public ResponseEntity<MetricResponse> createMetric(MetricRequest request) {
-        return ResponseEntity.ok(metricService.createMetric(request));
+    public ResponseEntity<MetricResponse> createMetric(@RequestBody MetricRequest request, @PathVariable Long leaderboardId) {
+        return ResponseEntity.ok(metricService.createMetric(request, leaderboardId));
     }
 
     @PatchMapping("/{id}")

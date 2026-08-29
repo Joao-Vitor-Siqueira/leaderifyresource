@@ -27,12 +27,6 @@ public class EntryTagService {
 
     @Transactional
     public EntryTagResponse createEntryTag(EntryTagRequest request) {
-        Optional<EntryTag> exists =
-                entryTagRepository.findByEntryIdAndTagId(request.entryId(),request.tagId());
-        if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(EntryTag.class.getSimpleName(), exists.get().getId());
-        }
-
         Entry entry = entryRepository.findById(request.entryId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         Entry.class.getSimpleName(), request.entryId()
@@ -41,6 +35,11 @@ public class EntryTagService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         Tag.class.getSimpleName(), request.tagId()
                 ));
+        Optional<EntryTag> exists =
+                entryTagRepository.findByEntryIdAndTagId(request.entryId(),request.tagId());
+        if (exists.isPresent()) {
+            throw new ResourceAlreadyExistsException(EntryTag.class.getSimpleName());
+        }
 
 
         EntryTag entryTag = new EntryTag();

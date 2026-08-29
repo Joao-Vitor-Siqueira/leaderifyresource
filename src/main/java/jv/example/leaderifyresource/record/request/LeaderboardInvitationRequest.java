@@ -2,9 +2,8 @@ package jv.example.leaderifyresource.record.request;
 
 import jv.example.leaderifyresource.utils.Role;
 
-public record UserLeaderboardRequest(
+public record LeaderboardInvitationRequest(
         Long userId,
-        Long leaderboardId,
         Role role
 ) {
 }

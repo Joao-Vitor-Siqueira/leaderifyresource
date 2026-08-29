@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tagCategories")
+@RequestMapping("/leaderboards/{leaderboardId}/tagCategories")
 public class TagCategoryController {
     private final TagCategoryService tagCategoryService;
 
@@ -27,8 +27,8 @@ public class TagCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<TagCategoryResponse> createTagCategory(TagCategoryRequest tagCategoryRequest) {
-        return ResponseEntity.ok(tagCategoryService.createTagCategory(tagCategoryRequest));
+    public ResponseEntity<TagCategoryResponse> createTagCategory(@RequestBody TagCategoryRequest tagCategoryRequest, @PathVariable Long leaderboardId) {
+        return ResponseEntity.ok(tagCategoryService.createTagCategory(tagCategoryRequest, leaderboardId));
     }
 
     @PatchMapping("/{id}")

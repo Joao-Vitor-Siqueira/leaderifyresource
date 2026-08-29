@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/viewTagConfigs")
+@RequestMapping("/leaderboards/{leaderboardId}/views/{viewId}/tags")
 public class ViewTagConfigController {
     private final ViewTagConfigService viewTagConfigService;
 
@@ -27,8 +27,8 @@ public class ViewTagConfigController {
     }
 
     @PostMapping
-    public ResponseEntity<ViewTagConfigResponse> createViewTagConfig(ViewTagConfigRequest request) {
-        return ResponseEntity.ok(viewTagConfigService.createViewTagConfig(request));
+    public ResponseEntity<ViewTagConfigResponse> createViewTagConfig(@RequestBody ViewTagConfigRequest request, @PathVariable Long viewId) {
+        return ResponseEntity.ok(viewTagConfigService.createViewTagConfig(request, viewId));
     }
 
     @PatchMapping("/{id}")

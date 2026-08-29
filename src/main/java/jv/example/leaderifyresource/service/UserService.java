@@ -1,6 +1,7 @@
 package jv.example.leaderifyresource.service;
 
 import jakarta.transaction.Transactional;
+import jv.example.leaderifyresource.config.CustomUserDetails;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.User;
 import jv.example.leaderifyresource.repository.UserRepository;
@@ -54,8 +55,10 @@ public class UserService {
         SecurityContextHolder.getContext()
                 .setAuthentication(authentication);
 
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+
         String username = authentication.getName();
-        String token = jwtService.generateToken(username);
+        String token = jwtService.generateToken(username, user.getId());
 
         return token;
     }

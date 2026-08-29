@@ -1,62 +1,58 @@
 package jv.example.leaderifyresource.service;
 
 import jakarta.transaction.Transactional;
+import jv.example.leaderifyresource.exception.AccessDeniedException;
+import jv.example.leaderifyresource.exception.BusinessRuleViolationException;
 import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
-import jv.example.leaderifyresource.model.Leaderboard;
-import jv.example.leaderifyresource.model.UserLeaderboard;
-import jv.example.leaderifyresource.model.View;
+import jv.example.leaderifyresource.model.*;
 import jv.example.leaderifyresource.record.request.ViewRequest;
 import jv.example.leaderifyresource.record.response.ViewResponse;
-import jv.example.leaderifyresource.repository.LeaderboardRepository;
-import jv.example.leaderifyresource.repository.UserLeaderboardRepository;
-import jv.example.leaderifyresource.repository.ViewRepository;
+import jv.example.leaderifyresource.repository.*;
+import jv.example.leaderifyresource.utils.LeaderboardUtils;
+import jv.example.leaderifyresource.utils.Role;
+import jv.example.leaderifyresource.utils.Visibility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ViewService {
     private final ViewRepository viewRepository;
-    private final LeaderboardRepository leaderboardRepository;
     private final UserLeaderboardRepository userLeaderboardRepository;
 
     @Transactional
-    public ViewResponse createView(ViewRequest request) {
+    public ViewResponse createView(ViewRequest request, Long userLeaderboardId) {
+        UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(userLeaderboardId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        UserLeaderboard.class.getSimpleName(), userLeaderboardId
+                ));
+        Role userRole = userLeaderboard.getRole();
+
+        if(!LeaderboardUtils.canCreateView(userRole, userLeaderboardId))
+            throw new AccessDeniedException(View.class.getSimpleName());
+
+
         Optional<View> exists =
-                viewRepository.findByNameAndLeaderboardId(request.name(),request.leaderboardId());
-        if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(View.class.getSimpleName(), exists.get().getId());
-        }
-        Leaderboard leaderboard = leaderboardRepository.findById(request.leaderboardId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), request.leaderboardId()
-                ));
-        UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(request.userLeaderboardId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        UserLeaderboard.class.getSimpleName(), request.userLeaderboardId()
-                ));
+                viewRepository.findByNameAndUserLeaderboardId(request.name(),userLeaderboardId);
+        if (exists.isPresent())
+            throw new ResourceAlreadyExistsException(View.class.getSimpleName());
 
         View view = new View();
-        view.setLeaderboard(leaderboard);
+
         view.setName(request.name());
         view.setUserLeaderboard(userLeaderboard);
-        view.setViewMetricConfigs(request.viewMetricConfigs());
-        view.setViewTagConfigs(request.viewTagConfigs());
         view.setVisibility(request.visibility());
         View savedView = viewRepository.save(view);
 
         return new ViewResponse(
                 savedView.getId(),
                 request.name(),
-                leaderboard.getId(),
-                userLeaderboard.getId(),
-                request.viewMetricConfigs(),
-                request.viewTagConfigs(),
                 request.visibility()
         );
     }
@@ -69,10 +65,6 @@ public class ViewService {
         return new ViewResponse(
                 view.getId(),
                 view.getName(),
-                view.getLeaderboard().getId(),
-                view.getUserLeaderboard().getId(),
-                view.getViewMetricConfigs(),
-                view.getViewTagConfigs(),
                 view.getVisibility()
         );
     }
@@ -82,33 +74,36 @@ public class ViewService {
                 .map(view -> new ViewResponse(
                         view.getId(),
                         view.getName(),
-                        view.getLeaderboard().getId(),
-                        view.getUserLeaderboard().getId(),
-                        view.getViewMetricConfigs(),
-                        view.getViewTagConfigs(),
                         view.getVisibility()
                 ));
     }
 
     @Transactional
-    public ViewResponse updateView(Long id, ViewRequest request) {
+    public ViewResponse updateView(Long id, ViewRequest request, Long userLeaderboardId) {
         View view = viewRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         View.class.getSimpleName(), id
                 ));
 
+        Role userRole = view.getUserLeaderboard().getRole();
+        Long leaderboardOwnerId = view.getUserLeaderboard().getLeaderboard().getOwner().getId();
+        Long viewOwnerId = view.getUserLeaderboard().getId();
+
+        if(!LeaderboardUtils.canUpdateOrDeleteView(userRole, viewOwnerId, leaderboardOwnerId))
+            throw new AccessDeniedException(View.class.getSimpleName());
+
+        Optional<View> exists =
+                viewRepository.findByNameAndUserLeaderboardId(request.name(),userLeaderboardId);
+        if (exists.isPresent())
+            throw new ResourceAlreadyExistsException(View.class.getSimpleName());
+
         view.setName(request.name());
-        view.setViewTagConfigs(request.viewTagConfigs());
-        view.setViewMetricConfigs(request.viewMetricConfigs());
-        view.setVisibility(request.visibility());
+        if(!view.isBase())
+            view.setVisibility(request.visibility());
 
         return new ViewResponse(
                 view.getId(),
                 view.getName(),
-                view.getLeaderboard().getId(),
-                view.getUserLeaderboard().getId(),
-                view.getViewMetricConfigs(),
-                view.getViewTagConfigs(),
                 view.getVisibility()
         );
     }
@@ -119,6 +114,19 @@ public class ViewService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         View.class.getSimpleName(), id
                 ));
+
+        Role userRole = view.getUserLeaderboard().getRole();
+        Long leaderboardOwnerId = view.getUserLeaderboard().getLeaderboard().getOwner().getId();
+        Long viewOwnerId = view.getUserLeaderboard().getId();
+
+        if(!LeaderboardUtils.canUpdateOrDeleteView(userRole, viewOwnerId, leaderboardOwnerId))
+            throw new AccessDeniedException(View.class.getSimpleName());
+
+
+        if(view.isBase())
+            throw new BusinessRuleViolationException("Cannot delete base view");
+
+
         viewRepository.delete(view);
     }
 }

@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "entry_tag")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "entry_tag")
 public class EntryTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

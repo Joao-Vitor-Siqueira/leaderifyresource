@@ -8,10 +8,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "user")
 public class User extends BaseEntity {
 
     public User(String username, String password, String email) {
