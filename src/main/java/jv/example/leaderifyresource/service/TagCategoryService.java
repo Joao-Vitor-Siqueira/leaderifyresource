@@ -6,7 +6,6 @@ import jv.example.leaderifyresource.model.Leaderboard;
 import jv.example.leaderifyresource.model.Tag;
 import jv.example.leaderifyresource.model.TagCategory;
 import jv.example.leaderifyresource.record.request.TagCategoryRequest;
-import jv.example.leaderifyresource.record.request.TagRequest;
 import jv.example.leaderifyresource.record.response.TagCategoryResponse;
 import jv.example.leaderifyresource.repository.LeaderboardRepository;
 import jv.example.leaderifyresource.repository.TagCategoryRepository;

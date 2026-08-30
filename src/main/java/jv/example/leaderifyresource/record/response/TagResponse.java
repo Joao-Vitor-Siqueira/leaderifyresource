@@ -8,7 +8,6 @@ import java.util.List;
 public record TagResponse(
         Long id,
         String name,
-        String description,
         Long tagCategoryId
 ) {
 }

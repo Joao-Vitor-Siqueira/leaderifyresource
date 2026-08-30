@@ -28,7 +28,7 @@ public class ViewMetricConfigService {
     private final MetricRepository metricRepository;
 
     @Transactional
-    public ViewMetricConfigResponse createViewMetricConfig(ViewMetricConfigRequest request, Long viewId) {
+    public ViewMetricConfigResponse createViewMetricConfig(ViewMetricConfigRequest request, Long viewId, Long metricId) {
         View view =
                 viewRepository.findById(viewId).orElseThrow(() -> new ResourceNotFoundException(
                         View.class.getSimpleName(), viewId
@@ -38,13 +38,13 @@ public class ViewMetricConfigService {
         if(userRole.equals(Role.VIEWER))
             throw new AccessDeniedException(View.class.getSimpleName());
 
-        Metric metric = metricRepository.findById(request.metricId())
+        Metric metric = metricRepository.findById(metricId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Metric.class.getSimpleName(), request.metricId()
+                        Metric.class.getSimpleName(), metricId
                 ));
 
         Optional<ViewMetricConfig> exists =
-                viewMetricConfigRepository.findByViewIdAndMetricId(viewId, request.metricId());
+                viewMetricConfigRepository.findByViewIdAndMetricId(viewId, metricId);
         if (exists.isPresent()) {
             throw new ResourceAlreadyExistsException(ViewMetricConfig.class.getSimpleName());
         }

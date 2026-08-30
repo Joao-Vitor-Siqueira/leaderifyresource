@@ -36,7 +36,11 @@ public class Entry extends BaseEntity {
     @JoinColumn(name = "leaderboard_id", nullable = false)
     private Leaderboard leaderboard;
 
-    @OneToMany(mappedBy = "entry")
+    @OneToMany(
+            mappedBy = "entry",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<EntryTag> entryTags;
 
     @OneToMany(
