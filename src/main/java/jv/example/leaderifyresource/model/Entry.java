@@ -38,4 +38,11 @@ public class Entry extends BaseEntity {
 
     @OneToMany(mappedBy = "entry")
     private List<EntryTag> entryTags;
+
+    @OneToMany(
+            mappedBy = "entry",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Value> values;
 }

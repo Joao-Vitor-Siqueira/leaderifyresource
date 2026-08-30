@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -25,4 +27,10 @@ public class Metric {
     @JoinColumn(name = "leaderboard_id",  nullable = false)
     private Leaderboard leaderboard;
 
+    @OneToMany(
+            mappedBy = "metric",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Value> values;
 }
