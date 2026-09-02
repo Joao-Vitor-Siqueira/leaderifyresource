@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,4 +34,11 @@ public class Metric {
             orphanRemoval = true
     )
     private List<Value> values;
+
+    @OneToMany(
+            mappedBy = "metric",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ViewMetricConfig> viewMetricConfigs = new ArrayList<>();
 }
