@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/leaderboards/{leaderboardId}/members")
+@RequestMapping("/api/v1/leaderboards/{leaderboardId}/members")
 public class UserLeaderboardController {
     private final UserLeaderboardService userLeaderboardService;
 

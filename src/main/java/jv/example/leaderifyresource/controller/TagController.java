@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/leaderboards/{leaderboardId}/tagCategories/{tagCategoryId}/tags")
+@RequestMapping("/api/v1/leaderboards/{leaderboardId}/tagCategories/{tagCategoryId}/tags")
 public class TagController {
     private final TagService tagService;
 

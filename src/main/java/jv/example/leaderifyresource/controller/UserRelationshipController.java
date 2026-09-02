@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/userRelationships")
+@RequestMapping("/api/v1/userRelationships")
 public class UserRelationshipController {
     private final UserRelationshipService userRelationshipService;
 

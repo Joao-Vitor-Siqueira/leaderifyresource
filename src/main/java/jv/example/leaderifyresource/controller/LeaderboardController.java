@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/leaderboards")
+@RequestMapping("/api/v1/leaderboards")
 @RequiredArgsConstructor
 public class LeaderboardController{
     private final LeaderboardService leaderboardService;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/leaderboards/{leaderboardId}/members/{userLeaderboardId}/views/{viewId}/compute")
+@RequestMapping("/api/v1/leaderboards/{leaderboardId}/members/{userLeaderboardId}/views/{viewId}/compute")
 @RequiredArgsConstructor
 public class ComputeController {
     private final ComputeService computeService;
