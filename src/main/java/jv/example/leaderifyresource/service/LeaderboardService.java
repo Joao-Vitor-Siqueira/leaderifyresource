@@ -80,7 +80,7 @@ public class LeaderboardService {
     public LeaderboardResponse findLeaderboardById(Long id) {
         Leaderboard leaderboard = leaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), id
+                        Leaderboard.class.getSimpleName()
                 ));
 
         return new LeaderboardResponse(
@@ -103,7 +103,7 @@ public class LeaderboardService {
     public LeaderboardResponse updateLeaderboard(Long id, LeaderboardPatchRequest request, Long authenticatedUserId) {
         Leaderboard leaderboard = leaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), id
+                        Leaderboard.class.getSimpleName()
                 ));
         if(!leaderboard.getOwner().getId().equals(authenticatedUserId)){
             throw new AccessDeniedException(Leaderboard.class.getSimpleName());
@@ -124,7 +124,7 @@ public class LeaderboardService {
     public void deleteLeaderboard(Long id, Long authenticatedUserId) {
         Leaderboard leaderboard = leaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), id
+                        Leaderboard.class.getSimpleName()
                 ));
 
         if(!leaderboard.getOwner().getId().equals(authenticatedUserId)){

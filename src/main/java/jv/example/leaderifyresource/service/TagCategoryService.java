@@ -3,7 +3,6 @@ package jv.example.leaderifyresource.service;
 import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.Leaderboard;
-import jv.example.leaderifyresource.model.Tag;
 import jv.example.leaderifyresource.model.TagCategory;
 import jv.example.leaderifyresource.record.request.TagCategoryRequest;
 import jv.example.leaderifyresource.record.response.TagCategoryResponse;
@@ -23,7 +22,7 @@ public class TagCategoryService {
     public TagCategoryResponse createTagCategory(TagCategoryRequest request, Long leaderboardId) {
         Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), leaderboardId
+                        Leaderboard.class.getSimpleName()
                 ));
         TagCategory tagCategory = new TagCategory();
         tagCategory.setName(request.name());
@@ -42,7 +41,7 @@ public class TagCategoryService {
     public TagCategoryResponse findTagCategoryById(Long id) {
         TagCategory tagCategory = tagCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        TagCategory.class.getSimpleName(), id
+                        TagCategory.class.getSimpleName()
                 ));
         return new TagCategoryResponse(
                 tagCategory.getId(),
@@ -64,7 +63,7 @@ public class TagCategoryService {
     public TagCategoryResponse updateTagCategory(Long id, TagCategoryRequest request) {
         TagCategory tagCategory = tagCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        TagCategory.class.getSimpleName(), id
+                        TagCategory.class.getSimpleName()
                 ));
 
         tagCategory.setName(request.name());
@@ -81,7 +80,7 @@ public class TagCategoryService {
     public void deleteTagCategory(Long id) {
         TagCategory tagCategory = tagCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        TagCategory.class.getSimpleName(), id
+                        TagCategory.class.getSimpleName()
                 ));
         tagCategoryRepository.delete(tagCategory);
     }

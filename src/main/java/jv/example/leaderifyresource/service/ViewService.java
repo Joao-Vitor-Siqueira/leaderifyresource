@@ -11,13 +11,11 @@ import jv.example.leaderifyresource.record.response.ViewResponse;
 import jv.example.leaderifyresource.repository.*;
 import jv.example.leaderifyresource.utils.LeaderboardUtils;
 import jv.example.leaderifyresource.utils.Role;
-import jv.example.leaderifyresource.utils.Visibility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -30,7 +28,7 @@ public class ViewService {
     public ViewResponse createView(ViewRequest request, Long userLeaderboardId) {
         UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(userLeaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        UserLeaderboard.class.getSimpleName(), userLeaderboardId
+                        UserLeaderboard.class.getSimpleName()
                 ));
         Role userRole = userLeaderboard.getRole();
 
@@ -60,7 +58,7 @@ public class ViewService {
     public ViewResponse findViewById(Long id) {
         View view =
                 viewRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
-                        View.class.getSimpleName(), id
+                        View.class.getSimpleName()
                 ));
         return new ViewResponse(
                 view.getId(),
@@ -82,7 +80,7 @@ public class ViewService {
     public ViewResponse updateView(Long id, ViewRequest request, Long userLeaderboardId) {
         View view = viewRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        View.class.getSimpleName(), id
+                        View.class.getSimpleName()
                 ));
 
         Role userRole = view.getUserLeaderboard().getRole();
@@ -112,7 +110,7 @@ public class ViewService {
     public void deleteView(Long id) {
         View view = viewRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        View.class.getSimpleName(), id
+                        View.class.getSimpleName()
                 ));
 
         Role userRole = view.getUserLeaderboard().getRole();

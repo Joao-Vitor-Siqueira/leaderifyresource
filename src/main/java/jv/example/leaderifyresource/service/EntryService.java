@@ -23,7 +23,7 @@ public class EntryService {
     public EntryResponse createEntry(EntryRequest request, Long leaderboardId) {
         Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), leaderboardId
+                        Leaderboard.class.getSimpleName()
                 ));
 
         Entry entry = new Entry();
@@ -42,7 +42,7 @@ public class EntryService {
     public EntryResponse findEntryById(Long id) {
         Entry entry = entryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Entry.class.getSimpleName(), id
+                        Entry.class.getSimpleName()
                 ));
         return new EntryResponse(
                 entry.getId(),
@@ -64,7 +64,7 @@ public class EntryService {
     public EntryResponse updateEntry(Long id,EntryRequest request) {
         Entry entry = entryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Entry.class.getSimpleName(), id
+                        Entry.class.getSimpleName()
                 ));
 
         entry.setName(request.name());
@@ -81,7 +81,7 @@ public class EntryService {
     public void deleteEntry(Long id) {
         Entry entry = entryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Entry.class.getSimpleName(), id
+                        Entry.class.getSimpleName()
                 ));
         entryRepository.delete(entry);
     }

@@ -31,7 +31,7 @@ public class ViewTagConfigService {
     public ViewTagConfigResponse createViewTagConfig(ViewTagConfigRequest request, Long viewId, Long tagCategoryId) {
         View view =
                 viewRepository.findById(viewId).orElseThrow(() -> new ResourceNotFoundException(
-                        View.class.getSimpleName(), viewId
+                        View.class.getSimpleName()
                 ));
 
         Role userRole = view.getUserLeaderboard().getRole();
@@ -40,7 +40,7 @@ public class ViewTagConfigService {
 
         TagCategory tagCategory = tagCategoryRepository.findById(tagCategoryId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        TagCategory.class.getSimpleName(), tagCategoryId
+                        TagCategory.class.getSimpleName()
                 ));
 
         Optional<ViewTagConfig> exists =
@@ -66,7 +66,7 @@ public class ViewTagConfigService {
     public ViewTagConfigResponse findViewTagConfigById(Long id) {
         ViewTagConfig viewTagConfig =
                 viewTagConfigRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
-                        ViewTagConfig.class.getSimpleName(), id
+                        ViewTagConfig.class.getSimpleName()
                 ));
         return new ViewTagConfigResponse(
                 viewTagConfig.getId(),
@@ -88,7 +88,7 @@ public class ViewTagConfigService {
     public ViewTagConfigResponse updateViewTagConfig(Long id, ViewTagConfigRequest request) {
         ViewTagConfig viewTagConfig = viewTagConfigRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        ViewTagConfig.class.getSimpleName(), id
+                        ViewTagConfig.class.getSimpleName()
                 ));
 
         viewTagConfig.setFilter(request.filter());
@@ -105,7 +105,7 @@ public class ViewTagConfigService {
     public void deleteViewTagConfig(Long id) {
         ViewTagConfig viewTagConfig = viewTagConfigRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        ViewTagConfig.class.getSimpleName(), id
+                        ViewTagConfig.class.getSimpleName()
                 ));
         viewTagConfigRepository.delete(viewTagConfig);
     }

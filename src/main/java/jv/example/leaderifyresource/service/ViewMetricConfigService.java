@@ -31,7 +31,7 @@ public class ViewMetricConfigService {
     public ViewMetricConfigResponse createViewMetricConfig(ViewMetricConfigRequest request, Long viewId, Long metricId) {
         View view =
                 viewRepository.findById(viewId).orElseThrow(() -> new ResourceNotFoundException(
-                        View.class.getSimpleName(), viewId
+                        View.class.getSimpleName()
                 ));
 
         Role userRole = view.getUserLeaderboard().getRole();
@@ -40,7 +40,7 @@ public class ViewMetricConfigService {
 
         Metric metric = metricRepository.findById(metricId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Metric.class.getSimpleName(), metricId
+                        Metric.class.getSimpleName()
                 ));
 
         Optional<ViewMetricConfig> exists =
@@ -73,7 +73,7 @@ public class ViewMetricConfigService {
     public ViewMetricConfigResponse findViewMetricConfigById(Long id) {
         ViewMetricConfig viewMetricConfig =
                 viewMetricConfigRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
-                        ViewMetricConfig.class.getSimpleName(), id
+                        ViewMetricConfig.class.getSimpleName()
                 ));
         return new ViewMetricConfigResponse(
                 viewMetricConfig.getId(),
@@ -101,7 +101,7 @@ public class ViewMetricConfigService {
     public ViewMetricConfigResponse updateViewMetricConfig(Long id, ViewMetricConfigRequest request) {
         ViewMetricConfig viewMetricConfig = viewMetricConfigRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        ViewMetricConfig.class.getSimpleName(), id
+                        ViewMetricConfig.class.getSimpleName()
                 ));
 
         viewMetricConfig.setVisibility(request.visibility());
@@ -124,7 +124,7 @@ public class ViewMetricConfigService {
     public void deleteViewMetricConfig(Long id) {
         ViewMetricConfig viewMetricConfig = viewMetricConfigRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        ViewMetricConfig.class.getSimpleName(), id
+                        ViewMetricConfig.class.getSimpleName()
                 ));
         viewMetricConfigRepository.delete(viewMetricConfig);
     }

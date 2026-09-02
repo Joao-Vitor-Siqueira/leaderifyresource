@@ -25,7 +25,7 @@ public class TagService {
     public TagResponse createTag(String name, Long tagCategoryId) {
         TagCategory tagCategory = tagCategoryRepository.findById(tagCategoryId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        TagCategory.class.getSimpleName(), tagCategoryId
+                        TagCategory.class.getSimpleName()
                 ));
 
         Optional<Tag> exists =
@@ -55,7 +55,7 @@ public class TagService {
                     tag.get().getTagCategory().getId()
             );
         }
-        throw new ResourceNotFoundException(Tag.class.getSimpleName(), id);
+        throw new ResourceNotFoundException(Tag.class.getSimpleName());
     }
 
     public Page<TagResponse> listTags(Pageable pageable) {
@@ -71,7 +71,7 @@ public class TagService {
     public TagResponse updateTag(Long id, String name) {
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Tag.class.getSimpleName(), id
+                        Tag.class.getSimpleName()
                 ));
 
         tag.setName(name);
@@ -87,7 +87,7 @@ public class TagService {
     public void deleteTag(Long id) {
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Tag.class.getSimpleName(), id
+                        Tag.class.getSimpleName()
                 ));
         tagRepository.delete(tag);
     }

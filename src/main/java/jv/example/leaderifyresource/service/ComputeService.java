@@ -34,12 +34,12 @@ public class ComputeService {
     public CalculationResponse calculate(Long leaderboardId,Long viewId){
         Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), leaderboardId
+                        Leaderboard.class.getSimpleName()
                 ));
 
         List<ViewMetricConfig> viewMetricConfigs = viewMetricConfigRepository.findAllByViewId(viewId);
         if(viewMetricConfigs.isEmpty()){
-            throw new ResourceNotFoundException(ViewMetricConfig.class.getSimpleName(), 0L);
+            throw new ResourceNotFoundException(ViewMetricConfig.class.getSimpleName());
         }
 
         Map<Integer, MetricSort> metricSorts = new HashMap<>();
@@ -57,7 +57,7 @@ public class ComputeService {
 
         List<Entry> entries = entryRepository.findAllByLeaderboardId(leaderboardId);
         if(entries.isEmpty()){
-            throw new ResourceNotFoundException(Entry.class.getSimpleName(), 0L);
+            throw new ResourceNotFoundException(Entry.class.getSimpleName());
         }
 
         List<EntryMetricValue> entryMetricValues = new ArrayList<>();
@@ -68,7 +68,7 @@ public class ComputeService {
             for (int i = 0; i < positionMetricIds.size(); i++) {
                 Long metricId = positionMetricIds.get(i);
                 Value value = valueRepository.findByMetricIdAndEntryId(metricId, entry.getId())
-                        .orElseThrow(() -> new ResourceNotFoundException(Value.class.getSimpleName(), 0L));
+                        .orElseThrow(() -> new ResourceNotFoundException(Value.class.getSimpleName()));
                 String metricName = value.getMetric().getName();
                 scores.add(new MetricValue(metricName , value.getValue()));
             }

@@ -41,11 +41,11 @@ public class UserLeaderboardService {
 
         Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), leaderboardId
+                        Leaderboard.class.getSimpleName()
                 ));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        User.class.getSimpleName(), userId
+                        User.class.getSimpleName()
                 ));
 
 
@@ -67,7 +67,7 @@ public class UserLeaderboardService {
     public UserLeaderboardResponse findUserLeaderboardById(Long id) {
         UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        UserLeaderboard.class.getSimpleName(), id
+                        UserLeaderboard.class.getSimpleName()
                 ));
         return new UserLeaderboardResponse(
                 userLeaderboard.getId(),
@@ -95,7 +95,7 @@ public class UserLeaderboardService {
         }
         UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        UserLeaderboard.class.getSimpleName(), id
+                        UserLeaderboard.class.getSimpleName()
                 ));
 
         Long ownerId = userLeaderboard.getLeaderboard().getOwner().getId();
@@ -126,7 +126,7 @@ public class UserLeaderboardService {
         }
         UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        UserLeaderboard.class.getSimpleName(), id
+                        UserLeaderboard.class.getSimpleName()
                 ));
 
         Long ownerId =  userLeaderboard.getLeaderboard().getOwner().getId();
@@ -145,7 +145,7 @@ public class UserLeaderboardService {
     public void leaveLeaderboard(Long id, Long authenticatedUserId) {
         UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        UserLeaderboard.class.getSimpleName(), id
+                        UserLeaderboard.class.getSimpleName()
                 ));
         if(authenticatedUserId.equals(userLeaderboard.getLeaderboard().getOwner().getId())) {
             throw new BusinessRuleViolationException("The owner cannot leave the leaderboard");

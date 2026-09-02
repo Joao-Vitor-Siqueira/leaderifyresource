@@ -65,6 +65,6 @@ public class UserService {
 
     public User getUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(User.class.getSimpleName(), id));
+                .orElseThrow(() -> new ResourceNotFoundException(User.class.getSimpleName()));
     }
 }
