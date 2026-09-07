@@ -5,6 +5,7 @@ import jv.example.leaderifyresource.model.User;
 import jv.example.leaderifyresource.record.response.AuthResponse;
 import jv.example.leaderifyresource.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,9 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
+    @Value("${jwt.cookie.secure}")
+    private boolean secureCookie;
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
@@ -50,9 +54,9 @@ public class UserController {
         ResponseCookie refreshCookie = ResponseCookie
                 .from("refreshToken", authResponse.refreshToken())
                 .httpOnly(true)
-                .secure(false) // true in prod
+                .secure(secureCookie) // true in prod
                 .sameSite("Strict")
-                .path("/api/v1/users/refresh")
+                .path("/api/v1/users")
                 .maxAge(Duration.ofDays(7))
                 .build();
 
@@ -71,7 +75,7 @@ public class UserController {
 
     @PostMapping("/refresh")
     public ResponseEntity<Void> refresh(
-            @CookieValue("refreshToken") String refreshToken,
+            @CookieValue(value = "refreshToken", required = false) String refreshToken,
             HttpServletResponse response
     ) {
         AuthResponse authResponse =
@@ -80,9 +84,9 @@ public class UserController {
         ResponseCookie newRefreshCookie = ResponseCookie
                 .from("refreshToken", authResponse.refreshToken())
                 .httpOnly(true)
-                .secure(false) // true in prod
+                .secure(secureCookie) // true in prod
                 .sameSite("Strict")
-                .path("/api/v1/users/refresh")
+                .path("/api/v1/users")
                 .maxAge(Duration.ofDays(7))
                 .build();
 
@@ -98,4 +102,27 @@ public class UserController {
                 )
                 .build();
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(
+            @CookieValue("refreshToken") String refreshToken,
+            HttpServletResponse response
+    ) {
+        userService.logout(refreshToken);
+
+        ResponseCookie cookie = ResponseCookie
+                .from("refreshToken", "")
+                .httpOnly(true)
+                .secure(secureCookie)
+                .sameSite("Strict")
+                .path("/api/v1/users")
+                .maxAge(0)
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

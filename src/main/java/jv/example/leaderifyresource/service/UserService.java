@@ -3,8 +3,10 @@ package jv.example.leaderifyresource.service;
 import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.config.CustomUserDetails;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
+import jv.example.leaderifyresource.model.RefreshToken;
 import jv.example.leaderifyresource.model.User;
 import jv.example.leaderifyresource.record.response.AuthResponse;
+import jv.example.leaderifyresource.repository.RefreshTokenRepository;
 import jv.example.leaderifyresource.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -23,6 +28,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final RefreshTokenRepository refreshTokenRepository;
+
 
     public Page<User> listUsers(String name, Pageable pageable) {
         Page<User> users;
@@ -49,6 +56,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException(User.class.getSimpleName()));
     }
 
+    @Transactional
     public AuthResponse login(User request) {
         Authentication authentication =
                 authenticationManager.authenticate(
@@ -72,19 +80,46 @@ public class UserService {
         String refreshToken =
                 jwtService.generateRefreshToken(user.getId());
 
+        User savedUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(User.class.getSimpleName()));
+
+        RefreshToken entity = new RefreshToken();
+        entity.setUser(savedUser);
+        entity.setToken(jwtService.hashToken(refreshToken));
+        entity.setRevoked(false);
+        entity.setExpiresAt(Instant.now().plus(7, ChronoUnit.DAYS));
+
+        refreshTokenRepository.save(entity);
+
         return new AuthResponse(accessToken, refreshToken);
     }
 
-
+    @Transactional
     public AuthResponse refreshToken(String refreshToken) {
+        if (!jwtService.isRefreshToken(refreshToken)) {
+            throw new RuntimeException("Token is not a refresh token");
+        }
+
+        String tokenHash = jwtService.hashToken(refreshToken);
+
+        RefreshToken storedToken = refreshTokenRepository.findByToken(tokenHash)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(RefreshToken.class.getSimpleName()));
+
+        if (storedToken.isRevoked()) {
+            throw new RuntimeException("Refresh token revoked");
+        }
+
+        if (storedToken.getExpiresAt().isBefore(Instant.now())) {
+            throw new RuntimeException("Refresh token expired");
+        }
 
         if (!jwtService.validateJwtToken(refreshToken)) {
             throw new RuntimeException("Invalid refresh token");
         }
 
-        if (!jwtService.isRefreshToken(refreshToken)) {
-            throw new RuntimeException("Token is not a refresh token");
-        }
+        storedToken.setRevoked(true);
+        refreshTokenRepository.save(storedToken);
 
         Long userId =  jwtService.getUserIdFromToken(refreshToken);
 
@@ -97,9 +132,32 @@ public class UserService {
         String newRefreshToken =
                 jwtService.generateRefreshToken(userId);
 
+        RefreshToken entity = new RefreshToken();
+        entity.setUser(user);
+        entity.setToken(jwtService.hashToken(newRefreshToken));
+        entity.setRevoked(false);
+        entity.setExpiresAt(Instant.now().plus(7, ChronoUnit.DAYS));
+
+        refreshTokenRepository.save(entity);
+
         return new AuthResponse(
                 newAccessToken,
                 newRefreshToken
         );
+    }
+
+    public void logout(String refreshToken) {
+
+        if (refreshToken == null) {
+            return;
+        }
+
+        String tokenHash = jwtService.hashToken(refreshToken);
+
+        refreshTokenRepository.findByToken(tokenHash)
+                .ifPresent(token -> {
+                    token.setRevoked(true);
+                    refreshTokenRepository.save(token);
+                });
     }
 }
