@@ -1,6 +1,7 @@
 package jv.example.leaderifyresource.service;
 
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -21,6 +22,9 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private int jwtExpirationMs;
 
+    @Value("${jwt.refresh.expiration}")
+    private int jwtRefreshExpirationMs;
+
     private SecretKey key;
 
     @PostConstruct
@@ -28,39 +32,61 @@ public class JwtService {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username, Long userId) {
+    public String generateAccessToken(String username) {
         return Jwts.builder()
                 .subject(username)
-                .claim("userId", userId)
+                .claim("type", "access")
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key)
                 .compact();
     }
 
-    public String getUserFromToken(String token) {
-        return Jwts.parser().verifyWith(key).build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
+    public String generateRefreshToken(Long userId) {
+        return Jwts.builder()
+                .subject(userId.toString())
+                .claim("type", "refresh")
+                .issuedAt(new Date())
+                .expiration(new Date(
+                        System.currentTimeMillis() + jwtRefreshExpirationMs
+                ))
+                .signWith(key)
+                .compact();
     }
 
-    public Long getUserIdFromToken(String token) {
+    public Claims parseToken(String token) {
         return Jwts.parser()
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
-                .getPayload()
-                .get("userId", Long.class);
+                .getPayload();
     }
 
     public boolean validateJwtToken(String token) {
         try {
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+            parseToken(token);
             return true;
         } catch (Exception e) {
-            log.error("JWT validation error: {}", e.getMessage());
+            log.debug("JWT validation error: {}", e.getMessage());
+            return false;
         }
-        return false;
     }
+
+    public boolean isRefreshToken(String token) {
+        try {
+            Claims claims = parseToken(token);
+            return "refresh".equals(claims.get("type", String.class));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String getUserFromToken(String token) {
+        return parseToken(token).getSubject();
+    }
+
+    public Long getUserIdFromToken(String token) {
+        return Long.valueOf(parseToken(token).getSubject());
+    }
+
 }

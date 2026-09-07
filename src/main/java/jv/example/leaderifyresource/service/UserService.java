@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.config.CustomUserDetails;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.User;
+import jv.example.leaderifyresource.record.response.AuthResponse;
 import jv.example.leaderifyresource.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -43,7 +44,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public String login(User request) {
+    public User getUser(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(User.class.getSimpleName()));
+    }
+
+    public AuthResponse login(User request) {
         Authentication authentication =
                 authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(
@@ -55,16 +61,45 @@ public class UserService {
         SecurityContextHolder.getContext()
                 .setAuthentication(authentication);
 
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        CustomUserDetails user =
+                (CustomUserDetails) authentication.getPrincipal();
 
         String username = authentication.getName();
-        String token = jwtService.generateToken(username, user.getId());
 
-        return token;
+        String accessToken =
+                jwtService.generateAccessToken(username);
+
+        String refreshToken =
+                jwtService.generateRefreshToken(user.getId());
+
+        return new AuthResponse(accessToken, refreshToken);
     }
 
-    public User getUser(Long id) {
-        return userRepository.findById(id)
+
+    public AuthResponse refreshToken(String refreshToken) {
+
+        if (!jwtService.validateJwtToken(refreshToken)) {
+            throw new RuntimeException("Invalid refresh token");
+        }
+
+        if (!jwtService.isRefreshToken(refreshToken)) {
+            throw new RuntimeException("Token is not a refresh token");
+        }
+
+        Long userId =  jwtService.getUserIdFromToken(refreshToken);
+
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(User.class.getSimpleName()));
+
+        String newAccessToken =
+                jwtService.generateAccessToken(user.getEmail());
+
+        String newRefreshToken =
+                jwtService.generateRefreshToken(userId);
+
+        return new AuthResponse(
+                newAccessToken,
+                newRefreshToken
+        );
     }
 }

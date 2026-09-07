@@ -1,13 +1,18 @@
 package jv.example.leaderifyresource.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jv.example.leaderifyresource.model.User;
+import jv.example.leaderifyresource.record.response.AuthResponse;
 import jv.example.leaderifyresource.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -36,8 +41,61 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody User request) {
-        String token = userService.login(request);
-        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, STR."Bearer \{token}").build();
+    public ResponseEntity<Void> login(
+            @RequestBody User request,
+            HttpServletResponse response
+    ) {
+        AuthResponse authResponse = userService.login(request);
+
+        ResponseCookie refreshCookie = ResponseCookie
+                .from("refreshToken", authResponse.refreshToken())
+                .httpOnly(true)
+                .secure(false) // true in prod
+                .sameSite("Strict")
+                .path("/api/v1/users/refresh")
+                .maxAge(Duration.ofDays(7))
+                .build();
+
+        response.addHeader(
+                HttpHeaders.SET_COOKIE,
+                refreshCookie.toString()
+        );
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.AUTHORIZATION,
+                        STR."Bearer \{authResponse.accessToken()}"
+                )
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Void> refresh(
+            @CookieValue("refreshToken") String refreshToken,
+            HttpServletResponse response
+    ) {
+        AuthResponse authResponse =
+                userService.refreshToken(refreshToken);
+
+        ResponseCookie newRefreshCookie = ResponseCookie
+                .from("refreshToken", authResponse.refreshToken())
+                .httpOnly(true)
+                .secure(false) // true in prod
+                .sameSite("Strict")
+                .path("/api/v1/users/refresh")
+                .maxAge(Duration.ofDays(7))
+                .build();
+
+        response.addHeader(
+                HttpHeaders.SET_COOKIE,
+                newRefreshCookie.toString()
+        );
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.AUTHORIZATION,
+                        STR."Bearer \{authResponse.accessToken()}"
+                )
+                .build();
     }
 }
