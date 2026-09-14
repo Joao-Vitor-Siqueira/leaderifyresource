@@ -39,7 +39,7 @@ public class ValueServiceTest {
 
     @Test
     void shouldSaveValue(){
-        ValueRequest request = new ValueRequest(1L,1L,50.00);
+        ValueRequest request = new ValueRequest(1L,1L,35.00);
 
         Metric metric = new Metric();
         metric.setId(1L);
@@ -51,7 +51,7 @@ public class ValueServiceTest {
         savedValue.setId(1L);
         savedValue.setMetric(metric);
         savedValue.setEntry(entry);
-        savedValue.setValue(50.00);
+        savedValue.setValue(35.00);
 
         when(metricRepository.findById(1L))
                 .thenReturn(Optional.of(metric));
@@ -71,7 +71,7 @@ public class ValueServiceTest {
         assertEquals(1L, response.id());
         assertEquals(1L, response.metricId());
         assertEquals(1L, response.entryId());
-        assertEquals(50.00, response.value());
+        assertEquals(35.00, response.value());
 
         verify(valueRepository).save(any(Value.class));
     }
