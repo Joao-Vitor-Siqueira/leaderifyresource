@@ -47,11 +47,11 @@ public class LeaderboardInvitationService {
 
         Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), leaderboardId
+                        Leaderboard.class.getSimpleName()
                 ));
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        User.class.getSimpleName(), request.userId()
+                        User.class.getSimpleName()
                 ));
 
         LeaderboardInvitation  leaderboardInvitation = new LeaderboardInvitation();
@@ -74,7 +74,7 @@ public class LeaderboardInvitationService {
     public void updateLeaderboardInvitation(Long id, InvitationStatus status, Long authenticatedUserId) {
         LeaderboardInvitation leaderboardInvitation = leaderboardInvitationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        LeaderboardInvitation.class.getSimpleName(), id
+                        LeaderboardInvitation.class.getSimpleName()
                 ));
 
         if(!authenticatedUserId.equals(leaderboardInvitation.getUser().getId())) {

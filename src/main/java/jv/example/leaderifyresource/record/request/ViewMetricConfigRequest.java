@@ -6,12 +6,12 @@ import jv.example.leaderifyresource.utils.Sort;
 import jv.example.leaderifyresource.utils.Visibility;
 
 public record ViewMetricConfigRequest(
-        @NotNull(message = "Metric Id must not be null")
-        Long metricId,
         Visibility visibility,
+        @NotNull(message = "Sort must not be null")
         Sort sort,
         NumericFilter numericFilter,
         Double target,
+        @NotNull(message = "Position must not be null")
         Integer position
 ) {
 }

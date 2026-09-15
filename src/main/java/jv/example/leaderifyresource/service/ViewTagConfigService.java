@@ -28,23 +28,23 @@ public class ViewTagConfigService {
     private final TagCategoryRepository tagCategoryRepository;
 
     @Transactional
-    public ViewTagConfigResponse createViewTagConfig(ViewTagConfigRequest request, Long viewId) {
+    public ViewTagConfigResponse createViewTagConfig(ViewTagConfigRequest request, Long viewId, Long tagCategoryId) {
         View view =
                 viewRepository.findById(viewId).orElseThrow(() -> new ResourceNotFoundException(
-                        View.class.getSimpleName(), viewId
+                        View.class.getSimpleName()
                 ));
 
         Role userRole = view.getUserLeaderboard().getRole();
         if(userRole.equals(Role.VIEWER))
             throw new AccessDeniedException(View.class.getSimpleName());
 
-        TagCategory tagCategory = tagCategoryRepository.findById(request.tagCategoryId())
+        TagCategory tagCategory = tagCategoryRepository.findById(tagCategoryId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        TagCategory.class.getSimpleName(), request.tagCategoryId()
+                        TagCategory.class.getSimpleName()
                 ));
 
         Optional<ViewTagConfig> exists =
-                viewTagConfigRepository.findByViewIdAndTagCategoryId(viewId, request.tagCategoryId());
+                viewTagConfigRepository.findByViewIdAndTagCategoryId(viewId, tagCategoryId);
         if (exists.isPresent()) {
             throw new ResourceAlreadyExistsException(ViewTagConfig.class.getSimpleName());
         }
@@ -58,18 +58,20 @@ public class ViewTagConfigService {
 
         return new ViewTagConfigResponse(
                 savedViewTagConfig.getId(),
-                request.filter()
+                request.filter(),
+                request.target()
         );
     }
 
     public ViewTagConfigResponse findViewTagConfigById(Long id) {
         ViewTagConfig viewTagConfig =
                 viewTagConfigRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
-                        ViewTagConfig.class.getSimpleName(), id
+                        ViewTagConfig.class.getSimpleName()
                 ));
         return new ViewTagConfigResponse(
                 viewTagConfig.getId(),
-                viewTagConfig.getFilter()
+                viewTagConfig.getFilter(),
+                viewTagConfig.getTarget()
         );
     }
 
@@ -77,7 +79,8 @@ public class ViewTagConfigService {
         return viewTagConfigRepository.findAll(pageable)
                 .map(viewTagConfig -> new ViewTagConfigResponse(
                         viewTagConfig.getId(),
-                        viewTagConfig.getFilter()
+                        viewTagConfig.getFilter(),
+                        viewTagConfig.getTarget()
                 ));
     }
 
@@ -85,14 +88,16 @@ public class ViewTagConfigService {
     public ViewTagConfigResponse updateViewTagConfig(Long id, ViewTagConfigRequest request) {
         ViewTagConfig viewTagConfig = viewTagConfigRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        ViewTagConfig.class.getSimpleName(), id
+                        ViewTagConfig.class.getSimpleName()
                 ));
 
         viewTagConfig.setFilter(request.filter());
+        viewTagConfig.setTarget(request.target());
 
         return new ViewTagConfigResponse(
                 viewTagConfig.getId(),
-                viewTagConfig.getFilter()
+                viewTagConfig.getFilter(),
+                viewTagConfig.getTarget()
         );
     }
 
@@ -100,7 +105,7 @@ public class ViewTagConfigService {
     public void deleteViewTagConfig(Long id) {
         ViewTagConfig viewTagConfig = viewTagConfigRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        ViewTagConfig.class.getSimpleName(), id
+                        ViewTagConfig.class.getSimpleName()
                 ));
         viewTagConfigRepository.delete(viewTagConfig);
     }

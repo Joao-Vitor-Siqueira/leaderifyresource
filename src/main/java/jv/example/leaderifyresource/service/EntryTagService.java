@@ -29,11 +29,11 @@ public class EntryTagService {
     public EntryTagResponse createEntryTag(EntryTagRequest request) {
         Entry entry = entryRepository.findById(request.entryId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Entry.class.getSimpleName(), request.entryId()
+                        Entry.class.getSimpleName()
                 ));
         Tag tag = tagRepository.findById(request.tagId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Tag.class.getSimpleName(), request.tagId()
+                        Tag.class.getSimpleName()
                 ));
         Optional<EntryTag> exists =
                 entryTagRepository.findByEntryIdAndTagId(request.entryId(),request.tagId());
@@ -59,7 +59,7 @@ public class EntryTagService {
         EntryTag entryTag = entryTagRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                EntryTag.class.getSimpleName(), id));
+                                EntryTag.class.getSimpleName()));
         return new EntryTagResponse(
                 entryTag.getId(),
                 entryTag.getEntry().getId(),
@@ -80,7 +80,7 @@ public class EntryTagService {
     public void deleteEntryTag(Long id) {
         EntryTag entryTag = entryTagRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        EntryTag.class.getSimpleName(), id
+                        EntryTag.class.getSimpleName()
                 ));
         entryTagRepository.delete(entryTag);
     }

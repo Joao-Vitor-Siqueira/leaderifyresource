@@ -1,16 +1,12 @@
 package jv.example.leaderifyresource.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.Entry;
 import jv.example.leaderifyresource.model.Metric;
 import jv.example.leaderifyresource.model.Value;
-import jv.example.leaderifyresource.record.request.MetricRequest;
 import jv.example.leaderifyresource.record.request.ValueRequest;
-import jv.example.leaderifyresource.record.response.MetricResponse;
 import jv.example.leaderifyresource.record.response.ValueResponse;
 import jv.example.leaderifyresource.repository.EntryRepository;
 import jv.example.leaderifyresource.repository.MetricRepository;
@@ -33,11 +29,11 @@ public class ValueService {
     public ValueResponse createValue(ValueRequest request) {
         Metric metric = metricRepository.findById(request.metricId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Metric.class.getSimpleName(), request.metricId()
+                        Metric.class.getSimpleName()
                 ));
         Entry entry = entryRepository.findById(request.entryId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Entry.class.getSimpleName(), request.entryId()
+                        Entry.class.getSimpleName()
                 ));
 
         Optional<Value> exists =
@@ -62,7 +58,7 @@ public class ValueService {
     public ValueResponse findValueById(Long id) {
         Value value =
                 valueRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
-                        Value.class.getSimpleName(), id
+                        Value.class.getSimpleName()
                 ));
         return new ValueResponse(
                 value.getId(),
@@ -86,7 +82,7 @@ public class ValueService {
     public ValueResponse updateValue(Long id, ValueRequest request) {
         Value value = valueRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Value.class.getSimpleName(), id
+                        Value.class.getSimpleName()
                 ));
 
         value.setValue(request.value());
@@ -103,7 +99,7 @@ public class ValueService {
     public void deleteValue(Long id) {
         Value value = valueRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Value.class.getSimpleName(), id
+                        Value.class.getSimpleName()
                 ));
         valueRepository.delete(value);
     }

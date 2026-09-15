@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/leaderboards/{leaderboardId}/tagCategories")
+@RequestMapping("/api/v1/leaderboards/{leaderboardId}/tagCategories")
 public class TagCategoryController {
     private final TagCategoryService tagCategoryService;
 

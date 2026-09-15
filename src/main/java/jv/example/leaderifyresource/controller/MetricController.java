@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/leaderboards/{leaderboardId}/metrics")
+@RequestMapping("/api/v1/leaderboards/{leaderboardId}/metrics")
 public class MetricController {
     private final MetricService metricService;
 

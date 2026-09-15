@@ -29,9 +29,6 @@ public class Tag {
     @Column(nullable = false)
     private String name;
 
-    @Column
-    private String description;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_category_id", nullable = false)
     private TagCategory tagCategory;
