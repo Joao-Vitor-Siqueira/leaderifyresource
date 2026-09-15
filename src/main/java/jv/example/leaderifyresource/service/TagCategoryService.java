@@ -19,36 +19,34 @@ public class TagCategoryService {
     private final TagCategoryRepository tagCategoryRepository;
     private final LeaderboardRepository leaderboardRepository;
 
-    public TagCategoryResponse createTagCategory(TagCategoryRequest request) {
-        Leaderboard leaderboard = leaderboardRepository.findById(request.LeaderboardId())
+    public TagCategoryResponse createTagCategory(TagCategoryRequest request, Long leaderboardId) {
+        Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), request.LeaderboardId()
+                        Leaderboard.class.getSimpleName()
                 ));
         TagCategory tagCategory = new TagCategory();
         tagCategory.setName(request.name());
         tagCategory.setDescription(request.description());
         tagCategory.setLeaderboard(leaderboard);
-        tagCategory.setTags(request.tags());
+
         TagCategory savedTagCategory = tagCategoryRepository.save(tagCategory);
 
         return new TagCategoryResponse(
                 savedTagCategory.getId(),
                 savedTagCategory.getName(),
-                savedTagCategory.getDescription(),
-                savedTagCategory.getTags()
+                savedTagCategory.getDescription()
         );
     }
 
     public TagCategoryResponse findTagCategoryById(Long id) {
         TagCategory tagCategory = tagCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        TagCategory.class.getSimpleName(), id
+                        TagCategory.class.getSimpleName()
                 ));
         return new TagCategoryResponse(
                 tagCategory.getId(),
                 tagCategory.getName(),
-                tagCategory.getDescription(),
-                tagCategory.getTags()
+                tagCategory.getDescription()
         );
     }
 
@@ -57,8 +55,7 @@ public class TagCategoryService {
                 .map(tagCategory -> new TagCategoryResponse(
                         tagCategory.getId(),
                         tagCategory.getName(),
-                        tagCategory.getDescription(),
-                        tagCategory.getTags()
+                        tagCategory.getDescription()
                 ));
     }
 
@@ -66,7 +63,7 @@ public class TagCategoryService {
     public TagCategoryResponse updateTagCategory(Long id, TagCategoryRequest request) {
         TagCategory tagCategory = tagCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        TagCategory.class.getSimpleName(), id
+                        TagCategory.class.getSimpleName()
                 ));
 
         tagCategory.setName(request.name());
@@ -75,8 +72,7 @@ public class TagCategoryService {
         return new TagCategoryResponse(
                 tagCategory.getId(),
                 tagCategory.getName(),
-                tagCategory.getDescription(),
-                tagCategory.getTags()
+                tagCategory.getDescription()
         );
     }
 
@@ -84,7 +80,7 @@ public class TagCategoryService {
     public void deleteTagCategory(Long id) {
         TagCategory tagCategory = tagCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        TagCategory.class.getSimpleName(), id
+                        TagCategory.class.getSimpleName()
                 ));
         tagCategoryRepository.delete(tagCategory);
     }

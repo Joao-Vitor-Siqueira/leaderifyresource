@@ -1,6 +1,5 @@
 package jv.example.leaderifyresource.controller;
 
-import jv.example.leaderifyresource.record.request.TagRequest;
 import jv.example.leaderifyresource.record.response.TagResponse;
 import jv.example.leaderifyresource.service.TagService;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/tags")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/leaderboards/{leaderboardId}/tagCategories/{tagCategoryId}/tags")
 public class TagController {
     private final TagService tagService;
 
@@ -27,13 +26,13 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<TagResponse> createTag(TagRequest request) {
-        return ResponseEntity.ok(tagService.createTag(request));
+    public ResponseEntity<TagResponse> createTag(@RequestBody String name, @PathVariable Long tagCategoryId) {
+        return ResponseEntity.ok(tagService.createTag(name, tagCategoryId));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TagResponse> updateTag(@PathVariable Long id, @RequestBody TagRequest request) {
-        return ResponseEntity.ok(tagService.updateTag(id, request));
+    public ResponseEntity<TagResponse> updateTag(@PathVariable Long id, @RequestBody String name) {
+        return ResponseEntity.ok(tagService.updateTag(id, name));
     }
 
     @DeleteMapping("/{id}")

@@ -31,18 +31,18 @@ public class UserRelationshipService {
         Optional<UserRelationship> exists =
                 userRelationshipRepository.findByUserHighIdAndUserLowId(userHighId, userLowId);
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(UserRelationship.class.getSimpleName(), exists.get().getId());
+            throw new ResourceAlreadyExistsException(UserRelationship.class.getSimpleName());
         }
 
         User userHigh = userRepository.findById(userHighId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                User.class.getSimpleName(), userHighId));
+                                User.class.getSimpleName()));
 
         User userLow = userRepository.findById(userLowId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                User.class.getSimpleName(), userLowId));
+                                User.class.getSimpleName()));
 
 
 
@@ -65,7 +65,7 @@ public class UserRelationshipService {
         UserRelationship userRelationship = userRelationshipRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                UserRelationship.class.getSimpleName(), id));
+                                UserRelationship.class.getSimpleName()));
         return new UserRelationshipResponse(
                 userRelationship.getId(),
                 userRelationship.getUserHigh().getId(),
@@ -88,7 +88,7 @@ public class UserRelationshipService {
     public UserRelationshipResponse updateUserRelationship(Long id, UserRelationshipRequest request) {
         UserRelationship userRelationship = userRelationshipRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        UserRelationship.class.getSimpleName(), id
+                        UserRelationship.class.getSimpleName()
                 ));
 
         userRelationship.setStatus(RelationshipStatus.FRIENDS); //change later
@@ -105,7 +105,7 @@ public class UserRelationshipService {
     public void deleteUserRelationship(Long id) {
         UserRelationship userRelationship = userRelationshipRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        UserRelationship.class.getSimpleName(), id
+                        UserRelationship.class.getSimpleName()
                 ));
         userRelationshipRepository.delete(userRelationship);
     }

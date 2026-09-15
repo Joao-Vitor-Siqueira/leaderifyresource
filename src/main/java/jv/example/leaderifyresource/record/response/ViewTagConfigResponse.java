@@ -4,8 +4,7 @@ import jv.example.leaderifyresource.utils.Filter;
 
 public record ViewTagConfigResponse(
         Long id,
-        Long viewId,
-        Long tagCategoryId,
-        Filter filter
+        Filter filter,
+        String target
 ) {
 }

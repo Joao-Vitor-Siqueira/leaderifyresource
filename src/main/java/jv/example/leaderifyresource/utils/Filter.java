@@ -4,4 +4,5 @@ public enum Filter {
     CONTAINS,
     STARTS_WITH,
     ENDS_WITH,
+    EQUALS,
 }

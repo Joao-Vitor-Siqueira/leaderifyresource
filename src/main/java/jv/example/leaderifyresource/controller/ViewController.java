@@ -1,8 +1,10 @@
 package jv.example.leaderifyresource.controller;
 
+import jakarta.validation.Valid;
 import jv.example.leaderifyresource.record.request.ViewRequest;
 import jv.example.leaderifyresource.record.response.ViewResponse;
 import jv.example.leaderifyresource.service.ViewService;
+import jv.example.leaderifyresource.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/leaderboards/{leaderboardId}/members/{userLeaderboardId}/views")
 public class ViewController {
     private final ViewService viewService;
 
@@ -26,18 +29,18 @@ public class ViewController {
     }
 
     @PostMapping
-    public ResponseEntity<ViewResponse> createView(ViewRequest request) {
-        return ResponseEntity.ok(viewService.createView(request));
+    public ResponseEntity<ViewResponse> createView(@Valid @RequestBody ViewRequest request, @PathVariable Long userLeaderboardId) {
+        return ResponseEntity.ok(viewService.createView(request, userLeaderboardId));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ViewResponse> updateView(@PathVariable Long id, @RequestBody ViewRequest request) {
-        return ResponseEntity.ok(viewService.updateView(id, request));
+    public ResponseEntity<ViewResponse> updateView(@PathVariable Long id, @RequestBody ViewRequest request, @PathVariable Long userLeaderboardId) {
+        return ResponseEntity.ok(viewService.updateView(id, request, userLeaderboardId));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteView(@PathVariable Long id){
+    public void deleteView(@PathVariable Long id) {
         viewService.deleteView(id);
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/userRelationships")
+@RequestMapping("/api/v1/userRelationships")
 public class UserRelationshipController {
     private final UserRelationshipService userRelationshipService;
 
@@ -27,7 +27,7 @@ public class UserRelationshipController {
     }
 
     @PostMapping
-    public ResponseEntity<UserRelationshipResponse> createUserRelationship(UserRelationshipRequest request) {
+    public ResponseEntity<UserRelationshipResponse> createUserRelationship(@RequestBody UserRelationshipRequest request) {
         return ResponseEntity.ok(userRelationshipService.createUserRelationship(request));
     }
 

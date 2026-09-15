@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "tag_category")
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "tag_category")
 public class TagCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,13 +21,34 @@ public class TagCategory {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leaderboard_id")
+    @JoinColumn(name = "leaderboard_id", nullable = false)
     private Leaderboard leaderboard;
 
-    @OneToMany(mappedBy = "tagCategory")
-    private List<Tag> tags;
+    @OneToMany(
+            mappedBy = "tagCategory",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Tag> tags = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "tagCategory",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ViewTagConfig> viewTagConfigs = new ArrayList<>();
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
+        tag.setTagCategory(this);
+    }
+
+    public void addViewTagConfig(ViewTagConfig viewTagConfig) {
+        viewTagConfigs.add(viewTagConfig);
+        viewTagConfig.setTagCategory(this);
+    }
 }

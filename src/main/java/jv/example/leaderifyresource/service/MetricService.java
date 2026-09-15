@@ -20,10 +20,10 @@ public class MetricService {
     private final LeaderboardRepository leaderboardRepository;
 
     @Transactional
-    public MetricResponse createMetric(MetricRequest request) {
-        Leaderboard leaderboard = leaderboardRepository.findById(request.LeaderboardId())
+    public MetricResponse createMetric(MetricRequest request, Long leaderboardId) {
+        Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Leaderboard.class.getSimpleName(), request.LeaderboardId()
+                        Leaderboard.class.getSimpleName()
                 ));
 
         Metric metric = new Metric();
@@ -42,7 +42,7 @@ public class MetricService {
     public MetricResponse findMetricById(Long id) {
         Metric metric = metricRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Metric.class.getSimpleName(), id
+                        Metric.class.getSimpleName()
                 ));
         return new MetricResponse(
                 metric.getId(),
@@ -64,7 +64,7 @@ public class MetricService {
     public MetricResponse updateMetric(Long id,MetricRequest request) {
         Metric metric = metricRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Metric.class.getSimpleName(), id
+                        Metric.class.getSimpleName()
                 ));
 
         metric.setName(request.name());
@@ -81,7 +81,7 @@ public class MetricService {
     public void deleteMetric(Long id) {
         Metric metric = metricRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Metric.class.getSimpleName(), id
+                        Metric.class.getSimpleName()
                 ));
         metricRepository.delete(metric);
     }

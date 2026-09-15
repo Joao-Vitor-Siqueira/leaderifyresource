@@ -1,8 +1,9 @@
 package jv.example.leaderifyresource.controller;
 
-import jv.example.leaderifyresource.record.request.UserLeaderboardRequest;
 import jv.example.leaderifyresource.record.response.UserLeaderboardResponse;
 import jv.example.leaderifyresource.service.UserLeaderboardService;
+import jv.example.leaderifyresource.utils.Role;
+import jv.example.leaderifyresource.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/userLeaderboards")
+@RequestMapping("/api/v1/leaderboards/{leaderboardId}/members")
 public class UserLeaderboardController {
     private final UserLeaderboardService userLeaderboardService;
 
@@ -26,19 +27,20 @@ public class UserLeaderboardController {
         return ResponseEntity.ok(userLeaderboardService.listUserLeaderboards(pageable));
     }
 
-    @PostMapping
-    public ResponseEntity<UserLeaderboardResponse> createUserLeaderboard(UserLeaderboardRequest request) {
-        return ResponseEntity.ok(userLeaderboardService.createUserLeaderboard(request));
-    }
-
     @PatchMapping("/{id}")
-    public ResponseEntity<UserLeaderboardResponse> updateUserLeaderboard(@PathVariable Long id, @RequestBody UserLeaderboardRequest request) {
-        return ResponseEntity.ok(userLeaderboardService.updateUserLeaderboard(id, request));
+    public ResponseEntity<UserLeaderboardResponse> updateUserLeaderboard(@PathVariable Long id, @RequestBody Role role, @PathVariable Long leaderboardId) {
+        return ResponseEntity.ok(userLeaderboardService.updateUserLeaderboard(id, role, leaderboardId, SecurityUtils.getCurrentUserId()));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUserLeaderboard(@PathVariable Long id){
-        userLeaderboardService.deleteUserLeaderboard(id);
+    public void deleteUserLeaderboard(@PathVariable Long id, @PathVariable Long leaderboardId){
+        userLeaderboardService.deleteUserLeaderboard(id, leaderboardId, SecurityUtils.getCurrentUserId());
+    }
+
+    @DeleteMapping("leave/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void leaveLeaderboard(@PathVariable Long id){
+        userLeaderboardService.leaveLeaderboard(id, SecurityUtils.getCurrentUserId());
     }
 }

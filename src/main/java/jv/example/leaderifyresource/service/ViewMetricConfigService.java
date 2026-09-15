@@ -1,6 +1,7 @@
 package jv.example.leaderifyresource.service;
 
 import jakarta.transaction.Transactional;
+import jv.example.leaderifyresource.exception.AccessDeniedException;
 import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.Metric;
@@ -11,6 +12,7 @@ import jv.example.leaderifyresource.record.response.ViewMetricConfigResponse;
 import jv.example.leaderifyresource.repository.MetricRepository;
 import jv.example.leaderifyresource.repository.ViewMetricConfigRepository;
 import jv.example.leaderifyresource.repository.ViewRepository;
+import jv.example.leaderifyresource.utils.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,20 +28,26 @@ public class ViewMetricConfigService {
     private final MetricRepository metricRepository;
 
     @Transactional
-    public ViewMetricConfigResponse createViewMetricConfig(ViewMetricConfigRequest request) {
-        Optional<ViewMetricConfig> exists =
-                viewMetricConfigRepository.findByViewIdAndMetricId(request.viewId(), request.metricId());
-        if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(ViewMetricConfig.class.getSimpleName(), exists.get().getId());
-        }
+    public ViewMetricConfigResponse createViewMetricConfig(ViewMetricConfigRequest request, Long viewId, Long metricId) {
         View view =
-                viewRepository.findById(request.viewId()).orElseThrow(() -> new ResourceNotFoundException(
-                        View.class.getSimpleName(), request.viewId()
+                viewRepository.findById(viewId).orElseThrow(() -> new ResourceNotFoundException(
+                        View.class.getSimpleName()
                 ));
-        Metric metric = metricRepository.findById(request.metricId())
+
+        Role userRole = view.getUserLeaderboard().getRole();
+        if(userRole.equals(Role.VIEWER))
+            throw new AccessDeniedException(View.class.getSimpleName());
+
+        Metric metric = metricRepository.findById(metricId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        Metric.class.getSimpleName(), request.metricId()
+                        Metric.class.getSimpleName()
                 ));
+
+        Optional<ViewMetricConfig> exists =
+                viewMetricConfigRepository.findByViewIdAndMetricId(viewId, metricId);
+        if (exists.isPresent()) {
+            throw new ResourceAlreadyExistsException(ViewMetricConfig.class.getSimpleName());
+        }
 
         ViewMetricConfig viewMetricConfig = new ViewMetricConfig();
         viewMetricConfig.setView(view);
@@ -54,8 +62,6 @@ public class ViewMetricConfigService {
 
         return new ViewMetricConfigResponse(
                 savedViewMetricConfig.getId(),
-                view.getId(),
-                metric.getId(),
                 viewMetricConfig.getVisibility(),
                 viewMetricConfig.getSort(),
                 viewMetricConfig.getNumericFilter(),
@@ -67,12 +73,10 @@ public class ViewMetricConfigService {
     public ViewMetricConfigResponse findViewMetricConfigById(Long id) {
         ViewMetricConfig viewMetricConfig =
                 viewMetricConfigRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
-                        ViewMetricConfig.class.getSimpleName(), id
+                        ViewMetricConfig.class.getSimpleName()
                 ));
         return new ViewMetricConfigResponse(
                 viewMetricConfig.getId(),
-                viewMetricConfig.getView().getId(),
-                viewMetricConfig.getMetric().getId(),
                 viewMetricConfig.getVisibility(),
                 viewMetricConfig.getSort(),
                 viewMetricConfig.getNumericFilter(),
@@ -85,8 +89,6 @@ public class ViewMetricConfigService {
         return viewMetricConfigRepository.findAll(pageable)
                 .map(viewMetricConfig -> new ViewMetricConfigResponse(
                         viewMetricConfig.getId(),
-                        viewMetricConfig.getView().getId(),
-                        viewMetricConfig.getMetric().getId(),
                         viewMetricConfig.getVisibility(),
                         viewMetricConfig.getSort(),
                         viewMetricConfig.getNumericFilter(),
@@ -99,7 +101,7 @@ public class ViewMetricConfigService {
     public ViewMetricConfigResponse updateViewMetricConfig(Long id, ViewMetricConfigRequest request) {
         ViewMetricConfig viewMetricConfig = viewMetricConfigRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        ViewMetricConfig.class.getSimpleName(), id
+                        ViewMetricConfig.class.getSimpleName()
                 ));
 
         viewMetricConfig.setVisibility(request.visibility());
@@ -110,8 +112,6 @@ public class ViewMetricConfigService {
 
         return new ViewMetricConfigResponse(
                 viewMetricConfig.getId(),
-                viewMetricConfig.getView().getId(),
-                viewMetricConfig.getMetric().getId(),
                 viewMetricConfig.getVisibility(),
                 viewMetricConfig.getSort(),
                 viewMetricConfig.getNumericFilter(),
@@ -124,7 +124,7 @@ public class ViewMetricConfigService {
     public void deleteViewMetricConfig(Long id) {
         ViewMetricConfig viewMetricConfig = viewMetricConfigRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        ViewMetricConfig.class.getSimpleName(), id
+                        ViewMetricConfig.class.getSimpleName()
                 ));
         viewMetricConfigRepository.delete(viewMetricConfig);
     }
