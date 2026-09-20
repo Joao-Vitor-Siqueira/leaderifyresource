@@ -45,8 +45,12 @@ public class UserService {
     @Transactional
     public User createUser(User userRequest) {
         if(userRepository.existsByEmail(userRequest.getEmail())) {
-            throw new ResourceAlreadyExistsException("User already exists");
+            throw new ResourceAlreadyExistsException(STR."User already exists with email:\{userRequest.getEmail()}");
         }
+        if(userRepository.existsByUsername(userRequest.getUsername())) {
+            throw new ResourceAlreadyExistsException(STR."User already exists with username:\{userRequest.getUsername()}");
+        }
+
         String hashPassword = passwordEncoder.encode(userRequest.getPassword());
         User user = new User(userRequest.getUsername(), hashPassword , userRequest.getEmail());
         return userRepository.save(user);
