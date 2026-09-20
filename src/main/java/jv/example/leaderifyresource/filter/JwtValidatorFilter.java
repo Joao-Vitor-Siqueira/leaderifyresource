@@ -23,27 +23,59 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain)
             throws ServletException, IOException {
-        try {
-            String jwt = parseJwt(request);
-            if (jwt != null && jwtService.validateJwtToken(jwt)) {
-                final String username = jwtService.getUserFromToken(jwt);
-                final UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authenticationToken);
-            }
-        } catch (Exception e) {
-            // exception handling logic
+
+        String jwt = parseJwt(request);
+
+        //no JWT provided
+        if (jwt == null) {
+            filterChain.doFilter(request, response);
+            return;
         }
-        filterChain.doFilter(request, response);
+
+        try {
+            // JWT was provided but is invalid.
+            if (!jwtService.validateJwtToken(jwt)) {
+                SecurityContextHolder.clearContext();
+
+                response.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Invalid or expired JWT"
+                );
+                return;
+            }
+
+            String username = jwtService.getUserFromToken(jwt);
+
+            UserDetails userDetails =
+                    customUserDetailsService.loadUserByUsername(username);
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+
+            SecurityContextHolder.getContext()
+                    .setAuthentication(authentication);
+
+            filterChain.doFilter(request, response);
+
+        } catch (Exception e) {
+            log.error("JWT authentication failed", e);
+
+            SecurityContextHolder.clearContext();
+
+            response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    "Invalid or expired JWT"
+            );
+        }
     }
 
     private String parseJwt(HttpServletRequest request) {
