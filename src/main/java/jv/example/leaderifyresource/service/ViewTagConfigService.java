@@ -46,7 +46,7 @@ public class ViewTagConfigService {
         Optional<ViewTagConfig> exists =
                 viewTagConfigRepository.findByViewIdAndTagCategoryId(viewId, tagCategoryId);
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(ViewTagConfig.class.getSimpleName());
+            throw new ResourceAlreadyExistsException("ViewTagConfig already exists");
         }
 
         ViewTagConfig viewTagConfig = new ViewTagConfig();

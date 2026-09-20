@@ -2,6 +2,7 @@ package jv.example.leaderifyresource.service;
 
 import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.config.CustomUserDetails;
+import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.RefreshToken;
 import jv.example.leaderifyresource.model.User;
@@ -44,7 +45,7 @@ public class UserService {
     @Transactional
     public User createUser(User userRequest) {
         if(userRepository.existsByEmail(userRequest.getEmail())) {
-            throw new RuntimeException();
+            throw new ResourceAlreadyExistsException("User already exists");
         }
         String hashPassword = passwordEncoder.encode(userRequest.getPassword());
         User user = new User(userRequest.getUsername(), hashPassword , userRequest.getEmail());

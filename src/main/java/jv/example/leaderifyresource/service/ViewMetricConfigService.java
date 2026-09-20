@@ -46,7 +46,7 @@ public class ViewMetricConfigService {
         Optional<ViewMetricConfig> exists =
                 viewMetricConfigRepository.findByViewIdAndMetricId(viewId, metricId);
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(ViewMetricConfig.class.getSimpleName());
+            throw new ResourceAlreadyExistsException("ViewMetricConfig already exists");
         }
 
         ViewMetricConfig viewMetricConfig = new ViewMetricConfig();

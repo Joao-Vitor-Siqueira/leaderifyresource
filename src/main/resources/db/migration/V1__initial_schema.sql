@@ -156,6 +156,9 @@ alter table tag
 alter table user
     add constraint UKob8kqyqqgmefl0aco34akdtpe unique (email);
 
+alter table user
+    add constraint uk_username unique (username);
+
 alter table user_leaderboard
     add constraint uk_user_leaderboard_pair unique (user_id, leaderboard_id);
 

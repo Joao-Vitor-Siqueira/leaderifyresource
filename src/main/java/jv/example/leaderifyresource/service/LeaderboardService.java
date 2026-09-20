@@ -30,7 +30,7 @@ public class LeaderboardService {
             throw new BusinessRuleViolationException("Every metric must have a configuration");
         }
         if(leaderboardRepository.existsByOwner_IdAndName(authenticatedUserId, request.name())){
-            throw new ResourceAlreadyExistsException(Leaderboard.class.getSimpleName());
+            throw new ResourceAlreadyExistsException("Leaderboard already exists");
         }
 
         Leaderboard leaderboard = new Leaderboard();

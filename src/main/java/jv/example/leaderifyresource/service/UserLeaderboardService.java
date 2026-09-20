@@ -36,7 +36,7 @@ public class UserLeaderboardService {
         Optional<UserLeaderboard> exists =
                 userLeaderboardRepository.findByUserIdAndLeaderboardId(userId, leaderboardId);
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(UserLeaderboard.class.getSimpleName());
+            throw new ResourceAlreadyExistsException("User is already a member of the leaderboard");
         }
 
         Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)

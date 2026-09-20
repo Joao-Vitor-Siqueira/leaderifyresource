@@ -39,7 +39,7 @@ public class ViewService {
         Optional<View> exists =
                 viewRepository.findByNameAndUserLeaderboardId(request.name(),userLeaderboardId);
         if (exists.isPresent())
-            throw new ResourceAlreadyExistsException(View.class.getSimpleName());
+            throw new ResourceAlreadyExistsException("View already exists");
 
         View view = new View();
 
@@ -93,7 +93,7 @@ public class ViewService {
         Optional<View> exists =
                 viewRepository.findByNameAndUserLeaderboardId(request.name(),userLeaderboardId);
         if (exists.isPresent())
-            throw new ResourceAlreadyExistsException(View.class.getSimpleName());
+            throw new ResourceAlreadyExistsException("View already exists");
 
         view.setName(request.name());
         if(!view.isBase())
