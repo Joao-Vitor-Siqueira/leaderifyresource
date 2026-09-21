@@ -73,6 +73,11 @@ public class SecurityConfig {
                                 "/api/v1/users/logout"
                         ).permitAll()
                         .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/v1/users/email-exists",
+                                "/api/v1/users/username-exists"
+                        ).permitAll()
+                        .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"

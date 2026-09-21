@@ -91,6 +91,8 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
 
         return
+                path.equals("/api/v1/email-exists") ||
+                path.equals("/api/v1/username-exists") ||
                 path.equals("/api/v1/users/login") ||
                 path.equals("/api/v1/users/register") ||
                 path.equals("/api/v1/users/refresh") ||

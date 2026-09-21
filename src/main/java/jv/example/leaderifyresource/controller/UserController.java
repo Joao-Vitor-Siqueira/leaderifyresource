@@ -39,6 +39,18 @@ public class UserController {
         );
     }
 
+    @GetMapping("/email-exists")
+    public ResponseEntity<Boolean> emailExists(@RequestParam String email) {
+        boolean exists = userService.existsByEmail(email);
+        return ResponseEntity.ok(exists);
+    }
+
+    @GetMapping("/username-exists")
+    public ResponseEntity<Boolean> usernameExists(@RequestParam String username) {
+        boolean exists = userService.existsByUsername(username);
+        return ResponseEntity.ok(exists);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.createUser(user));
