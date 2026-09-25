@@ -25,8 +25,8 @@ public class LeaderboardController{
     }
 
     @GetMapping
-    public ResponseEntity<Page<LeaderboardResponse>> listLeaderboards(Pageable pageable){
-        return ResponseEntity.ok(leaderboardService.listLeaderboards(pageable));
+    public ResponseEntity<Page<LeaderboardResponse>> listLeaderboards(Pageable pageable,@RequestParam(required = false) String name){
+        return ResponseEntity.ok(leaderboardService.listLeaderboards(pageable, name));
     }
 
     @PostMapping
@@ -43,6 +43,12 @@ public class LeaderboardController{
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteLeaderboard(@PathVariable Long id) {
         leaderboardService.deleteLeaderboard(id, SecurityUtils.getCurrentUserId());
+    }
+
+    @GetMapping("/leaderboard-exists")
+    public ResponseEntity<Boolean> usernameExists(@RequestParam String name) {
+        boolean exists = leaderboardService.existsByOwner_IdAndName(SecurityUtils.getCurrentUserId(), name);
+        return ResponseEntity.ok(exists);
     }
 
 }

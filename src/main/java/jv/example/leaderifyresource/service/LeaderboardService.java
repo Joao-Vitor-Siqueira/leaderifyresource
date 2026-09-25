@@ -73,7 +73,9 @@ public class LeaderboardService {
         return new LeaderboardResponse(
                 savedLeaderboard.getId(),
                 savedLeaderboard.getName(),
-                savedLeaderboard.getDescription()
+                savedLeaderboard.getDescription(),
+                savedLeaderboard.getCreatedAt(),
+                savedLeaderboard.getUpdatedAt()
         );
     }
 
@@ -86,16 +88,27 @@ public class LeaderboardService {
         return new LeaderboardResponse(
                 leaderboard.getId(),
                 leaderboard.getName(),
-                leaderboard.getDescription()
+                leaderboard.getDescription(),
+                leaderboard.getCreatedAt(),
+                leaderboard.getUpdatedAt()
         );
     }
 
-    public Page<LeaderboardResponse> listLeaderboards(Pageable pageable){
-        return leaderboardRepository.findAll(pageable)
-                .map(leaderboard -> new LeaderboardResponse(
+    public Page<LeaderboardResponse> listLeaderboards(Pageable pageable, String name){
+        Page<Leaderboard> leaderboardPage;
+        if(name == null || name.isBlank()){
+            leaderboardPage = leaderboardRepository.findAll(pageable);
+        }
+        else {
+            leaderboardPage = leaderboardRepository.findByNameContainingIgnoreCase(pageable, name);
+        }
+
+        return leaderboardPage.map(leaderboard -> new LeaderboardResponse(
                         leaderboard.getId(),
                         leaderboard.getName(),
-                        leaderboard.getDescription()
+                        leaderboard.getDescription(),
+                        leaderboard.getCreatedAt(),
+                        leaderboard.getUpdatedAt()
                 ));
     }
 
@@ -116,7 +129,9 @@ public class LeaderboardService {
         return new LeaderboardResponse(
                 leaderboard.getId(),
                 leaderboard.getName(),
-                leaderboard.getDescription()
+                leaderboard.getDescription(),
+                leaderboard.getCreatedAt(),
+                leaderboard.getUpdatedAt()
         );
     }
 
@@ -133,5 +148,9 @@ public class LeaderboardService {
 
         viewMetricConfigRepository.deleteAllByLeaderboardId(id);
         leaderboardRepository.delete(leaderboard);
+    }
+
+    public boolean existsByOwner_IdAndName(Long authenticatedUserId, String name) {
+        return leaderboardRepository.existsByOwner_IdAndName(authenticatedUserId, name);
     }
 }
