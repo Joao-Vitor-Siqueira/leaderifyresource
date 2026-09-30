@@ -29,6 +29,11 @@ public class LeaderboardController{
         return ResponseEntity.ok(leaderboardService.listLeaderboards(pageable, name));
     }
 
+    @GetMapping("/owned")
+    public ResponseEntity<Page<LeaderboardResponse>> listOwnedLeaderboards(Pageable pageable,@RequestParam(required = false) String name){
+        return ResponseEntity.ok(leaderboardService.listLeaderboardsByOwner(pageable, name, SecurityUtils.getCurrentUserId()));
+    }
+
     @PostMapping
     public ResponseEntity<LeaderboardResponse> createLeaderboard(@Valid @RequestBody LeaderboardCreationRequest request){
         return ResponseEntity.ok(leaderboardService.createLeaderboard(request, SecurityUtils.getCurrentUserId()));

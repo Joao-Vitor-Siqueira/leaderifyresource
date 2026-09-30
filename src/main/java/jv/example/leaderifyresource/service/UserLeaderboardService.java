@@ -77,6 +77,19 @@ public class UserLeaderboardService {
         );
     }
 
+    public UserLeaderboardResponse findUserLeaderboardByUserId(Long leaderboardId, Long authenticatedUserId) {
+        UserLeaderboard userLeaderboard = userLeaderboardRepository.findByUserIdAndLeaderboardId(leaderboardId,authenticatedUserId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        UserLeaderboard.class.getSimpleName()
+                ));
+        return new UserLeaderboardResponse(
+                userLeaderboard.getId(),
+                userLeaderboard.getUser().getId(),
+                userLeaderboard.getLeaderboard().getId(),
+                userLeaderboard.getRole()
+        );
+    }
+
     public Page<UserLeaderboardResponse> listUserLeaderboards(Pageable pageable) {
         return userLeaderboardRepository.findAll(pageable)
                 .map(userLeaderboard -> new UserLeaderboardResponse(

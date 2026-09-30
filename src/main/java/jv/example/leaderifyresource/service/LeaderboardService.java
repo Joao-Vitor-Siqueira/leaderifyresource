@@ -112,6 +112,23 @@ public class LeaderboardService {
                 ));
     }
 
+    public Page<LeaderboardResponse> listLeaderboardsByOwner(Pageable pageable, String name, Long authenticatedUserId){
+        Page<Leaderboard> leaderboardPage;
+        if(name == null || name.isBlank()){
+            leaderboardPage = leaderboardRepository.findByOwnerId(authenticatedUserId, pageable);
+        }
+        else {
+            leaderboardPage = leaderboardRepository.findByOwnerIdAndNameContainingIgnoreCase(authenticatedUserId, name, pageable);
+        }
+        return leaderboardPage.map(leaderboard -> new LeaderboardResponse(
+                leaderboard.getId(),
+                leaderboard.getName(),
+                leaderboard.getDescription(),
+                leaderboard.getCreatedAt(),
+                leaderboard.getUpdatedAt()
+        ));
+    }
+
     @Transactional
     public LeaderboardResponse updateLeaderboard(Long id, LeaderboardPatchRequest request, Long authenticatedUserId) {
         Leaderboard leaderboard = leaderboardRepository.findById(id)
