@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ViewRepository extends JpaRepository<View,Long> {
     Optional<View> findByNameAndUserLeaderboardId(String name, Long userLeaderboardId);
+    Optional<View> findByUserLeaderboardLeaderboardIdAndBaseTrue(Long leaderboardId);
 }

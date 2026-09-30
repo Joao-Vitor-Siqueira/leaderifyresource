@@ -67,6 +67,18 @@ public class ViewService {
         );
     }
 
+    public ViewResponse findBaseView(Long leaderboardId) {
+        View view =
+                viewRepository.findByUserLeaderboardLeaderboardIdAndBaseTrue(leaderboardId).orElseThrow(() -> new ResourceNotFoundException(
+                        View.class.getSimpleName()
+                ));
+        return new ViewResponse(
+                view.getId(),
+                view.getName(),
+                view.getVisibility()
+        );
+    }
+
     public Page<ViewResponse> listViews(Pageable pageable) {
         return viewRepository.findAll(pageable)
                 .map(view -> new ViewResponse(
