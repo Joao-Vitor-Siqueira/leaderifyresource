@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jv.example.leaderifyresource.model.User;
 import jv.example.leaderifyresource.record.response.AuthResponse;
 import jv.example.leaderifyresource.service.UserService;
+import jv.example.leaderifyresource.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUser(id));
+        return ResponseEntity.ok(userService.getUser(id, SecurityUtils.getCurrentUserId()));
     }
 
     @GetMapping
@@ -35,7 +36,7 @@ public class UserController {
             Pageable pageable) {
 
         return ResponseEntity.ok(
-                userService.listUsers(name, pageable)
+                userService.listUsers(name, pageable, SecurityUtils.getCurrentUserId())
         );
     }
 

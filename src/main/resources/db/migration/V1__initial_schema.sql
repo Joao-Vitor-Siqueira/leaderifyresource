@@ -78,6 +78,7 @@ create table user (
                       email varchar(255) not null,
                       password varchar(255) not null,
                       username varchar(255) not null,
+                      authority enum ('USER','ADMIN') not null,
                       primary key (id)
 ) engine=InnoDB;
 

@@ -3,6 +3,7 @@ package jv.example.leaderifyresource;
 import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.model.*;
 import jv.example.leaderifyresource.repository.*;
+import jv.example.leaderifyresource.utils.Authority;
 import jv.example.leaderifyresource.utils.Role;
 import jv.example.leaderifyresource.utils.Sort;
 import jv.example.leaderifyresource.utils.Visibility;
@@ -33,7 +34,8 @@ public class LeaderifyresourceApplication {
 //			User user = new User(
 //					"Jeffrey",
 //					"{noop}123456",
-//					"Jeffrey@email.com"
+//					"Jeffrey@email.com",
+//					Authority.ADMIN
 //			);
 //			Leaderboard leaderboard = new Leaderboard();
 //			leaderboard.setOwner(user);
