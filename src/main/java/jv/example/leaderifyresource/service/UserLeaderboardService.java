@@ -78,7 +78,7 @@ public class UserLeaderboardService {
     }
 
     public UserLeaderboardResponse findUserLeaderboardByUserId(Long leaderboardId, Long authenticatedUserId) {
-        UserLeaderboard userLeaderboard = userLeaderboardRepository.findByUserIdAndLeaderboardId(leaderboardId,authenticatedUserId)
+        UserLeaderboard userLeaderboard = userLeaderboardRepository.findByUserIdAndLeaderboardId(authenticatedUserId, leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         UserLeaderboard.class.getSimpleName()
                 ));

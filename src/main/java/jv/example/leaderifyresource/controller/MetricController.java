@@ -22,8 +22,8 @@ public class MetricController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<MetricResponse>> getMetrics(Pageable pageable){
-        return ResponseEntity.ok(metricService.listMetrics(pageable));
+    public ResponseEntity<Page<MetricResponse>> getMetrics(Pageable pageable, @PathVariable Long leaderboardId){
+        return ResponseEntity.ok(metricService.listMetrics(pageable, leaderboardId));
     }
 
     @PostMapping

@@ -51,8 +51,8 @@ public class MetricService {
         );
     }
 
-    public Page<MetricResponse> listMetrics(Pageable pageable) {
-        return metricRepository.findAll(pageable)
+    public Page<MetricResponse> listMetrics(Pageable pageable, Long leaderboardId) {
+        return metricRepository.findAllByLeaderboardId(leaderboardId,pageable)
                 .map(metric -> new MetricResponse(
                         metric.getId(),
                         metric.getName(),
