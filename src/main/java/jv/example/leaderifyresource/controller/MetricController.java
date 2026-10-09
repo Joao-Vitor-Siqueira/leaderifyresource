@@ -32,13 +32,13 @@ public class MetricController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<MetricResponse> updateMetric(@PathVariable Long id, @RequestBody MetricRequest request) {
-        return ResponseEntity.ok(metricService.updateMetric(id, request));
+    public ResponseEntity<MetricResponse> updateMetric(@PathVariable Long id,@PathVariable Long leaderboardId ,@RequestBody MetricRequest request) {
+        return ResponseEntity.ok(metricService.updateMetric(id,leaderboardId, request));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMetric(@PathVariable Long id){
-        metricService.deleteMetric(id);
+    public void deleteMetric(@PathVariable Long id, @PathVariable Long leaderboardId) {
+        metricService.deleteMetric(id, leaderboardId);
     }
 }

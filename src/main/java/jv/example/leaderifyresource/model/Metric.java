@@ -41,4 +41,9 @@ public class Metric {
             orphanRemoval = true
     )
     private List<ViewMetricConfig> viewMetricConfigs = new ArrayList<>();
+
+    public void addViewMetricConfig(ViewMetricConfig viewMetricConfig) {
+        this.viewMetricConfigs.add(viewMetricConfig);
+        viewMetricConfig.setMetric(this);
+    }
 }

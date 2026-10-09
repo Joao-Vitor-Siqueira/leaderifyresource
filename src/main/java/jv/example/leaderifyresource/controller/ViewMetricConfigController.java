@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/leaderboards/{leaderboardId}/members/{userLeaderboardId}/views/{viewId}/metrics/{metricId}")
+@RequestMapping("/api/v1/leaderboards/{leaderboardId}/members/{userLeaderboardId}/views/{viewId}/metrics/configs")
 public class ViewMetricConfigController {
     private final ViewMetricConfigService viewMetricConfigService;
 
@@ -22,8 +22,8 @@ public class ViewMetricConfigController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ViewMetricConfigResponse>> getViewMetricConfigs(Pageable pageable){
-        return ResponseEntity.ok(viewMetricConfigService.listViewMetricConfigs(pageable));
+    public ResponseEntity<Page<ViewMetricConfigResponse>> getViewMetricConfigs(Pageable pageable, @PathVariable Long viewId){
+        return ResponseEntity.ok(viewMetricConfigService.listViewMetricConfigs(viewId,pageable));
     }
 
     @PostMapping
