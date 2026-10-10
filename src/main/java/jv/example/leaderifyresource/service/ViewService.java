@@ -69,7 +69,7 @@ public class ViewService {
 
     public ViewResponse findBaseView(Long leaderboardId) {
         View view =
-                viewRepository.findByLeaderboardIdAndBaseTrue(leaderboardId).orElseThrow(() -> new ResourceNotFoundException(
+                viewRepository.findByUserLeaderboardLeaderboardIdAndBaseTrue(leaderboardId).orElseThrow(() -> new ResourceNotFoundException(
                         View.class.getSimpleName()
                 ));
         return new ViewResponse(

@@ -43,7 +43,7 @@ public interface ViewMetricConfigRepository extends JpaRepository<ViewMetricConf
     @Query("""
         UPDATE ViewMetricConfig vm
         SET vm.position = vm.position - :offset - 1
-        WHERE vm.viewId = :viewId
+        WHERE vm.view.id = :viewId
           AND vm.position > :offset
     """)
     int closePositionGap(

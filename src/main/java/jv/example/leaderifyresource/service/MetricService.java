@@ -39,7 +39,7 @@ public class MetricService {
         metric.setLeaderboard(leaderboard);
 
         ViewMetricConfig viewMetricConfig = new ViewMetricConfig();
-        View baseView = viewRepository.findByLeaderboardIdAndBaseTrue(leaderboardId).orElseThrow(() -> new ResourceNotFoundException(
+        View baseView = viewRepository.findByUserLeaderboardLeaderboardIdAndBaseTrue(leaderboardId).orElseThrow(() -> new ResourceNotFoundException(
                 View.class.getSimpleName()
         ));
         viewMetricConfig.setView(baseView);
@@ -105,7 +105,7 @@ public class MetricService {
         metric.setDescription(request.description());
 
         //base view: temp
-        View view = viewRepository.findByLeaderboardIdAndBaseTrue(leaderboardId)
+        View view = viewRepository.findByUserLeaderboardLeaderboardIdAndBaseTrue(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         View.class.getSimpleName()
                 ));
@@ -159,7 +159,7 @@ public class MetricService {
                 ));
 
         //base view: temp
-        View view = viewRepository.findByLeaderboardIdAndBaseTrue(leaderboardId)
+        View view = viewRepository.findByUserLeaderboardLeaderboardIdAndBaseTrue(leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         View.class.getSimpleName()
                 ));
