@@ -42,4 +42,9 @@ public class EntryController {
         entryService.deleteEntry(id);
     }
 
+    @GetMapping("/entry-exists")
+    public ResponseEntity<Boolean> entryExists(@PathVariable Long leaderboardId, @RequestParam String name) {
+        boolean exists = entryService.existsByLeaderboardIdAndName(leaderboardId, name);
+        return ResponseEntity.ok(exists);
+    }
 }

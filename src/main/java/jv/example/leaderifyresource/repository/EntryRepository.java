@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface EntryRepository extends JpaRepository<Entry, Long> {
     List<Entry> findAllByLeaderboardId(Long leaderboardId);
+    boolean existsByLeaderboardIdAndName(Long leaderboardId, String name);
 }

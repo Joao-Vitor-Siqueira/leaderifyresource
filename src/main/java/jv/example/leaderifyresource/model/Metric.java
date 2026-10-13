@@ -33,7 +33,7 @@ public class Metric {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Value> values;
+    private List<Value> values = new ArrayList<>();;
 
     @OneToMany(
             mappedBy = "metric",
@@ -45,5 +45,9 @@ public class Metric {
     public void addViewMetricConfig(ViewMetricConfig viewMetricConfig) {
         this.viewMetricConfigs.add(viewMetricConfig);
         viewMetricConfig.setMetric(this);
+    }
+    public void addValue(Value value) {
+        this.values.add(value);
+        value.setMetric(this);
     }
 }
