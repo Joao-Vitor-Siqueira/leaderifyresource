@@ -41,4 +41,10 @@ public class MetricController {
     public void deleteMetric(@PathVariable Long id, @PathVariable Long leaderboardId) {
         metricService.deleteMetric(id, leaderboardId);
     }
+
+    @GetMapping("/metric-exists")
+    public ResponseEntity<Boolean> metricExists(@PathVariable Long leaderboardId, @RequestParam String name) {
+        boolean exists = metricService.existsByLeaderboardIdAndName(leaderboardId, name);
+        return ResponseEntity.ok(exists);
+    }
 }

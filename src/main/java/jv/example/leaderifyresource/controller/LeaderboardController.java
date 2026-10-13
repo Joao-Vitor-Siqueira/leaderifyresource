@@ -51,7 +51,7 @@ public class LeaderboardController{
     }
 
     @GetMapping("/leaderboard-exists")
-    public ResponseEntity<Boolean> usernameExists(@RequestParam String name) {
+    public ResponseEntity<Boolean> leaderboardExists(@RequestParam String name) {
         boolean exists = leaderboardService.existsByOwner_IdAndName(SecurityUtils.getCurrentUserId(), name);
         return ResponseEntity.ok(exists);
     }

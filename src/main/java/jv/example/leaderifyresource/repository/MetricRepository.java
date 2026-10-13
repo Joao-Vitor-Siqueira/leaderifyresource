@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface MetricRepository extends JpaRepository<Metric, Long> {
     Page<Metric> findAllByLeaderboardId(Long leaderboardId, Pageable pageable);
     Integer countByLeaderboardId(Long leaderboardId);
+    boolean existsByLeaderboardIdAndName(Long leaderboardId, String name);
 }
