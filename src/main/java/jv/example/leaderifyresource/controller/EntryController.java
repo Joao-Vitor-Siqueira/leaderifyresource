@@ -22,8 +22,8 @@ public class EntryController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<EntryResponse>> getEntries(Pageable pageable){
-        return ResponseEntity.ok(entryService.listEntries(pageable));
+    public ResponseEntity<Page<EntryResponse>> getEntries(Pageable pageable, @PathVariable Long leaderboardId){
+        return ResponseEntity.ok(entryService.listEntries(pageable, leaderboardId));
     }
 
     @PostMapping
@@ -42,4 +42,9 @@ public class EntryController {
         entryService.deleteEntry(id);
     }
 
+    @GetMapping("/entry-exists")
+    public ResponseEntity<Boolean> entryExists(@PathVariable Long leaderboardId, @RequestParam String name) {
+        boolean exists = entryService.existsByLeaderboardIdAndName(leaderboardId, name);
+        return ResponseEntity.ok(exists);
+    }
 }

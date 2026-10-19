@@ -1,5 +1,6 @@
 package jv.example.leaderifyresource.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jv.example.leaderifyresource.filter.JwtValidatorFilter;
 import jv.example.leaderifyresource.service.CustomUserDetailsService;
 import jv.example.leaderifyresource.service.JwtService;
@@ -33,12 +34,30 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setExposedHeaders(
-                            List.of(HttpHeaders.AUTHORIZATION)
-                    );
-
+                    configuration.setAllowedOrigins(List.of(
+                            "http://localhost:4200"
+                    ));
+                    configuration.setAllowedMethods(List.of(
+                            "GET",
+                            "POST",
+                            "PUT",
+                            "DELETE",
+                            "OPTIONS",
+                            "PATCH"
+                    ));
+                    configuration.setAllowedHeaders(List.of("*"));
+                    configuration.setExposedHeaders(List.of(HttpHeaders.AUTHORIZATION));
+                    configuration.setAllowCredentials(true);
                     return configuration;
                 }))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(
+                                    HttpServletResponse.SC_UNAUTHORIZED,
+                                    "Unauthorized"
+                            );
+                        })
+                )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -55,10 +74,16 @@ public class SecurityConfig {
                                 "/api/v1/users/logout"
                         ).permitAll()
                         .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/v1/users/email-exists",
+                                "/api/v1/users/username-exists"
+                        ).permitAll()
+                        .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

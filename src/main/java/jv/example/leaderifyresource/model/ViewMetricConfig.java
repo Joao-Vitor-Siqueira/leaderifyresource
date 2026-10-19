@@ -12,7 +12,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "view_metric_config")
+@Table(
+        name = "view_metric_config",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_view_metric_config_position",
+                        columnNames = {"view_id", "position"}
+                ),
+                @UniqueConstraint(
+                        name = "uk_view_metric_config_metric_id_view_id",
+                        columnNames = {"view_id", "metric_id"}
+                )
+        }
+)
 public class ViewMetricConfig {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,5 +54,4 @@ public class ViewMetricConfig {
 
     @Column(nullable = false)
     private Integer position;
-
 }

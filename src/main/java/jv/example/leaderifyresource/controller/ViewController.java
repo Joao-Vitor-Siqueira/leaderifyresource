@@ -23,6 +23,11 @@ public class ViewController {
         return ResponseEntity.ok(viewService.findViewById(id));
     }
 
+    @GetMapping("/base")
+    public ResponseEntity<ViewResponse> getBaseView(@PathVariable Long leaderboardId){
+        return ResponseEntity.ok(viewService.findBaseView(leaderboardId));
+    }
+
     @GetMapping
     public ResponseEntity<Page<ViewResponse>> getViews(Pageable pageable){
         return ResponseEntity.ok(viewService.listViews(pageable));

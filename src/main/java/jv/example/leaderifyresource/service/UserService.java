@@ -2,12 +2,16 @@ package jv.example.leaderifyresource.service;
 
 import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.config.CustomUserDetails;
+import jv.example.leaderifyresource.exception.AccessDeniedException;
+import jv.example.leaderifyresource.exception.ResourceAlreadyExistsException;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.RefreshToken;
 import jv.example.leaderifyresource.model.User;
 import jv.example.leaderifyresource.record.response.AuthResponse;
+import jv.example.leaderifyresource.record.response.UsernameResponse;
 import jv.example.leaderifyresource.repository.RefreshTokenRepository;
 import jv.example.leaderifyresource.repository.UserRepository;
+import jv.example.leaderifyresource.utils.Authority;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +35,10 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
 
 
-    public Page<User> listUsers(String name, Pageable pageable) {
+    public Page<User> listUsers(String name, Pageable pageable, Long authenticatedUserId){
+        if(!userRepository.existsByIdAndAuthority(authenticatedUserId, Authority.ADMIN)){
+           throw new AccessDeniedException(User.class.getSimpleName());
+        }
         Page<User> users;
         if (name == null || name.isBlank()) {
             users = userRepository.findAll(pageable);
@@ -44,14 +51,21 @@ public class UserService {
     @Transactional
     public User createUser(User userRequest) {
         if(userRepository.existsByEmail(userRequest.getEmail())) {
-            throw new RuntimeException();
+            throw new ResourceAlreadyExistsException(STR."User already exists with email:\{userRequest.getEmail()}");
         }
+        if(userRepository.existsByUsername(userRequest.getUsername())) {
+            throw new ResourceAlreadyExistsException(STR."User already exists with username:\{userRequest.getUsername()}");
+        }
+
         String hashPassword = passwordEncoder.encode(userRequest.getPassword());
-        User user = new User(userRequest.getUsername(), hashPassword , userRequest.getEmail());
+        User user = new User(userRequest.getUsername(), hashPassword , userRequest.getEmail(), Authority.USER);
         return userRepository.save(user);
     }
 
-    public User getUser(Long id) {
+    public User getUser(Long id, Long authenticatedUserId) {
+        if(!userRepository.existsByIdAndAuthority(authenticatedUserId, Authority.ADMIN)){
+            throw new AccessDeniedException(User.class.getSimpleName());
+        }
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(User.class.getSimpleName()));
     }
@@ -159,5 +173,18 @@ public class UserService {
                     token.setRevoked(true);
                     refreshTokenRepository.save(token);
                 });
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public UsernameResponse findUsernameById(Long id) {
+        String username = userRepository.findUsernameById(id).orElseThrow(() -> new ResourceNotFoundException(User.class.getSimpleName()));
+        return new UsernameResponse(username);
     }
 }

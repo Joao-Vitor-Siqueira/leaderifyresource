@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -41,12 +42,17 @@ public class Entry extends BaseEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<EntryTag> entryTags;
+    private List<EntryTag> entryTags = new ArrayList<>();;
 
     @OneToMany(
             mappedBy = "entry",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Value> values;
+    private List<Value> values = new ArrayList<>();;
+
+    public void addValue(Value value) {
+        values.add(value);
+        value.setEntry(this);
+    }
 }

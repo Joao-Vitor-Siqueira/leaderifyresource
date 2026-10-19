@@ -4,11 +4,14 @@ import jv.example.leaderifyresource.model.Entry;
 import jv.example.leaderifyresource.model.Metric;
 import jv.example.leaderifyresource.model.TagCategory;
 
+import java.time.Instant;
 import java.util.List;
 
 public record LeaderboardResponse(
         Long id,
         String name,
-        String description
+        String description,
+        Instant createdAt,
+        Instant updatedAt
 ) {
 }

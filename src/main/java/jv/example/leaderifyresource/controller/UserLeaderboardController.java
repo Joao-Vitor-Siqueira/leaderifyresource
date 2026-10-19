@@ -22,6 +22,11 @@ public class UserLeaderboardController {
         return ResponseEntity.ok(userLeaderboardService.findUserLeaderboardById(id));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<UserLeaderboardResponse> getUserLeaderboardByUserId(@PathVariable Long leaderboardId){
+        return ResponseEntity.ok(userLeaderboardService.findUserLeaderboardByUserId(leaderboardId, SecurityUtils.getCurrentUserId()));
+    }
+
     @GetMapping
     public ResponseEntity<Page<UserLeaderboardResponse>> getUserLeaderboards(Pageable pageable){
         return ResponseEntity.ok(userLeaderboardService.listUserLeaderboards(pageable));

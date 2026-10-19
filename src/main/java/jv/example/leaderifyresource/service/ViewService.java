@@ -39,7 +39,7 @@ public class ViewService {
         Optional<View> exists =
                 viewRepository.findByNameAndUserLeaderboardId(request.name(),userLeaderboardId);
         if (exists.isPresent())
-            throw new ResourceAlreadyExistsException(View.class.getSimpleName());
+            throw new ResourceAlreadyExistsException("View already exists");
 
         View view = new View();
 
@@ -58,6 +58,18 @@ public class ViewService {
     public ViewResponse findViewById(Long id) {
         View view =
                 viewRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
+                        View.class.getSimpleName()
+                ));
+        return new ViewResponse(
+                view.getId(),
+                view.getName(),
+                view.getVisibility()
+        );
+    }
+
+    public ViewResponse findBaseView(Long leaderboardId) {
+        View view =
+                viewRepository.findByUserLeaderboardLeaderboardIdAndBaseTrue(leaderboardId).orElseThrow(() -> new ResourceNotFoundException(
                         View.class.getSimpleName()
                 ));
         return new ViewResponse(
@@ -93,7 +105,7 @@ public class ViewService {
         Optional<View> exists =
                 viewRepository.findByNameAndUserLeaderboardId(request.name(),userLeaderboardId);
         if (exists.isPresent())
-            throw new ResourceAlreadyExistsException(View.class.getSimpleName());
+            throw new ResourceAlreadyExistsException("View already exists");
 
         view.setName(request.name());
         if(!view.isBase())
