@@ -22,8 +22,8 @@ public class EntryController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<EntryResponse>> getEntries(Pageable pageable){
-        return ResponseEntity.ok(entryService.listEntries(pageable));
+    public ResponseEntity<Page<EntryResponse>> getEntries(Pageable pageable, @PathVariable Long leaderboardId){
+        return ResponseEntity.ok(entryService.listEntries(pageable, leaderboardId));
     }
 
     @PostMapping

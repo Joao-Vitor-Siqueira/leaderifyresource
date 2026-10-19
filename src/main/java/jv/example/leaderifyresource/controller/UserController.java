@@ -3,6 +3,7 @@ package jv.example.leaderifyresource.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import jv.example.leaderifyresource.model.User;
 import jv.example.leaderifyresource.record.response.AuthResponse;
+import jv.example.leaderifyresource.record.response.UsernameResponse;
 import jv.example.leaderifyresource.service.UserService;
 import jv.example.leaderifyresource.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
@@ -137,5 +138,8 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @GetMapping("/username")
+    public ResponseEntity<UsernameResponse> getUsername(){
+        return ResponseEntity.ok(userService.findUsernameById(SecurityUtils.getCurrentUserId()));
+    }
 }

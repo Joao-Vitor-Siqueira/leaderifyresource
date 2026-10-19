@@ -8,6 +8,7 @@ import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.RefreshToken;
 import jv.example.leaderifyresource.model.User;
 import jv.example.leaderifyresource.record.response.AuthResponse;
+import jv.example.leaderifyresource.record.response.UsernameResponse;
 import jv.example.leaderifyresource.repository.RefreshTokenRepository;
 import jv.example.leaderifyresource.repository.UserRepository;
 import jv.example.leaderifyresource.utils.Authority;
@@ -180,5 +181,10 @@ public class UserService {
 
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+    public UsernameResponse findUsernameById(Long id) {
+        String username = userRepository.findUsernameById(id).orElseThrow(() -> new ResourceNotFoundException(User.class.getSimpleName()));
+        return new UsernameResponse(username);
     }
 }

@@ -70,8 +70,8 @@ public class EntryService {
         );
     }
 
-    public Page<EntryResponse> listEntries(Pageable pageable) {
-        return entryRepository.findAll(pageable)
+    public Page<EntryResponse> listEntries(Pageable pageable, Long leaderboardId) {
+        return entryRepository.findAllByLeaderboardId(leaderboardId, pageable)
                 .map(entry -> new EntryResponse(
                         entry.getId(),
                         entry.getName(),
