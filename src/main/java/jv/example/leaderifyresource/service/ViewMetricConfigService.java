@@ -46,7 +46,7 @@ public class ViewMetricConfigService {
         Optional<ViewMetricConfig> exists =
                 viewMetricConfigRepository.findByViewIdAndMetricId(viewId, metricId);
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(ViewMetricConfig.class.getSimpleName());
+            throw new ResourceAlreadyExistsException("ViewMetricConfig already exists");
         }
 
         ViewMetricConfig viewMetricConfig = new ViewMetricConfig();
@@ -62,6 +62,7 @@ public class ViewMetricConfigService {
 
         return new ViewMetricConfigResponse(
                 savedViewMetricConfig.getId(),
+                metricId,
                 viewMetricConfig.getVisibility(),
                 viewMetricConfig.getSort(),
                 viewMetricConfig.getNumericFilter(),
@@ -77,6 +78,7 @@ public class ViewMetricConfigService {
                 ));
         return new ViewMetricConfigResponse(
                 viewMetricConfig.getId(),
+                viewMetricConfig.getMetric().getId(),
                 viewMetricConfig.getVisibility(),
                 viewMetricConfig.getSort(),
                 viewMetricConfig.getNumericFilter(),
@@ -85,10 +87,11 @@ public class ViewMetricConfigService {
         );
     }
 
-    public Page<ViewMetricConfigResponse> listViewMetricConfigs(Pageable pageable) {
-        return viewMetricConfigRepository.findAll(pageable)
+    public Page<ViewMetricConfigResponse> listViewMetricConfigs(Long viewId,Pageable pageable) {
+        return viewMetricConfigRepository.findAllByViewId(viewId,pageable)
                 .map(viewMetricConfig -> new ViewMetricConfigResponse(
                         viewMetricConfig.getId(),
+                        viewMetricConfig.getMetric().getId(),
                         viewMetricConfig.getVisibility(),
                         viewMetricConfig.getSort(),
                         viewMetricConfig.getNumericFilter(),
@@ -112,6 +115,7 @@ public class ViewMetricConfigService {
 
         return new ViewMetricConfigResponse(
                 viewMetricConfig.getId(),
+                viewMetricConfig.getMetric().getId(),
                 viewMetricConfig.getVisibility(),
                 viewMetricConfig.getSort(),
                 viewMetricConfig.getNumericFilter(),

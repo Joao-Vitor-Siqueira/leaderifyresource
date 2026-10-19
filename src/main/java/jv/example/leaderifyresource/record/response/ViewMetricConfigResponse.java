@@ -6,6 +6,7 @@ import jv.example.leaderifyresource.utils.Visibility;
 
 public record ViewMetricConfigResponse(
         Long id,
+        Long metricId,
         Visibility visibility,
         Sort sort,
         NumericFilter numericFilter,

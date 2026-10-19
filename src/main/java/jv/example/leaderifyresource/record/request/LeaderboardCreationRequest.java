@@ -11,8 +11,13 @@ public record LeaderboardCreationRequest(
         String name,
         String description,
         @NotEmpty(message = "A leaderboard must contain at least one metric")
-        List<MetricRequest> metrics,
+        List<MetricCreationRequest> metrics,
         @NotEmpty(message = "A leaderboard must contain metric configurations")
         List<Sort> metricSorts
 ) {
+        public record MetricCreationRequest(
+                String name,
+                String description
+        ) {}
 }
+

@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(
                         HttpStatus.CONFLICT.value(),
-                        ex.getResource(),
+                        "",
                         ex.getMessage(),
                         Instant.now(),
                         request.getRequestURI())

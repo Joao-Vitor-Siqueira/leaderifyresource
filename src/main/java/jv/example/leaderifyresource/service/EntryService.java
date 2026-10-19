@@ -4,20 +4,29 @@ import jakarta.transaction.Transactional;
 import jv.example.leaderifyresource.exception.ResourceNotFoundException;
 import jv.example.leaderifyresource.model.Entry;
 import jv.example.leaderifyresource.model.Leaderboard;
+import jv.example.leaderifyresource.model.Metric;
+import jv.example.leaderifyresource.model.Value;
 import jv.example.leaderifyresource.record.request.EntryRequest;
 import jv.example.leaderifyresource.record.response.EntryResponse;
 import jv.example.leaderifyresource.repository.EntryRepository;
 import jv.example.leaderifyresource.repository.LeaderboardRepository;
+import jv.example.leaderifyresource.repository.MetricRepository;
+import jv.example.leaderifyresource.repository.ValueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class EntryService {
     private final EntryRepository entryRepository;
     private final LeaderboardRepository leaderboardRepository;
+    private final ValueRepository  valueRepository;
+    private final MetricRepository metricRepository;
 
     @Transactional
     public EntryResponse createEntry(EntryRequest request, Long leaderboardId) {
@@ -30,6 +39,16 @@ public class EntryService {
         entry.setName(request.name());
         entry.setDescription(request.description());
         entry.setLeaderboard(leaderboard);
+
+        List<Metric> metrics = metricRepository.findAllByLeaderboardId(leaderboardId);
+
+        for (Metric metric : metrics) {
+            Value value = new Value();
+            value.setValue(0.0);
+            metric.addValue(value);
+            entry.addValue(value);
+        }
+
         Entry savedEntry = entryRepository.save(entry);
 
         return new EntryResponse(
@@ -51,8 +70,8 @@ public class EntryService {
         );
     }
 
-    public Page<EntryResponse> listEntries(Pageable pageable) {
-        return entryRepository.findAll(pageable)
+    public Page<EntryResponse> listEntries(Pageable pageable, Long leaderboardId) {
+        return entryRepository.findAllByLeaderboardId(leaderboardId, pageable)
                 .map(entry -> new EntryResponse(
                         entry.getId(),
                         entry.getName(),
@@ -84,5 +103,9 @@ public class EntryService {
                         Entry.class.getSimpleName()
                 ));
         entryRepository.delete(entry);
+    }
+
+    public boolean existsByLeaderboardIdAndName(Long leaderboardId, String name) {
+        return entryRepository.existsByLeaderboardIdAndName(leaderboardId, name);
     }
 }

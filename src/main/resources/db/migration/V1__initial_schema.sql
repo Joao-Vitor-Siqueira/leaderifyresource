@@ -78,6 +78,7 @@ create table user (
                       email varchar(255) not null,
                       password varchar(255) not null,
                       username varchar(255) not null,
+                      authority enum ('USER','ADMIN') not null,
                       primary key (id)
 ) engine=InnoDB;
 
@@ -155,6 +156,9 @@ alter table tag
 
 alter table user
     add constraint UKob8kqyqqgmefl0aco34akdtpe unique (email);
+
+alter table user
+    add constraint uk_username unique (username);
 
 alter table user_leaderboard
     add constraint uk_user_leaderboard_pair unique (user_id, leaderboard_id);

@@ -70,7 +70,7 @@ public class ComputeService {
                 Value value = valueRepository.findByMetricIdAndEntryId(metricId, entry.getId())
                         .orElseThrow(() -> new ResourceNotFoundException(Value.class.getSimpleName()));
                 String metricName = value.getMetric().getName();
-                scores.add(new MetricValue(metricName , value.getValue()));
+                scores.add(new MetricValue(value.getId(),metricName , value.getValue()));
             }
             entryMetricValues.add(new EntryMetricValue(entryName, scores));
         }

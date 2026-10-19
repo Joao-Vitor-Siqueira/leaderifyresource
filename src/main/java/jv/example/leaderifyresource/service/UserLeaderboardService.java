@@ -36,7 +36,7 @@ public class UserLeaderboardService {
         Optional<UserLeaderboard> exists =
                 userLeaderboardRepository.findByUserIdAndLeaderboardId(userId, leaderboardId);
         if (exists.isPresent()) {
-            throw new ResourceAlreadyExistsException(UserLeaderboard.class.getSimpleName());
+            throw new ResourceAlreadyExistsException("User is already a member of the leaderboard");
         }
 
         Leaderboard leaderboard = leaderboardRepository.findById(leaderboardId)
@@ -66,6 +66,19 @@ public class UserLeaderboardService {
 
     public UserLeaderboardResponse findUserLeaderboardById(Long id) {
         UserLeaderboard userLeaderboard = userLeaderboardRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        UserLeaderboard.class.getSimpleName()
+                ));
+        return new UserLeaderboardResponse(
+                userLeaderboard.getId(),
+                userLeaderboard.getUser().getId(),
+                userLeaderboard.getLeaderboard().getId(),
+                userLeaderboard.getRole()
+        );
+    }
+
+    public UserLeaderboardResponse findUserLeaderboardByUserId(Long leaderboardId, Long authenticatedUserId) {
+        UserLeaderboard userLeaderboard = userLeaderboardRepository.findByUserIdAndLeaderboardId(authenticatedUserId, leaderboardId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         UserLeaderboard.class.getSimpleName()
                 ));

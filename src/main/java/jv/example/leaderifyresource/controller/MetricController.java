@@ -22,8 +22,8 @@ public class MetricController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<MetricResponse>> getMetrics(Pageable pageable){
-        return ResponseEntity.ok(metricService.listMetrics(pageable));
+    public ResponseEntity<Page<MetricResponse>> getMetrics(Pageable pageable, @PathVariable Long leaderboardId){
+        return ResponseEntity.ok(metricService.listMetrics(pageable, leaderboardId));
     }
 
     @PostMapping
@@ -32,13 +32,19 @@ public class MetricController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<MetricResponse> updateMetric(@PathVariable Long id, @RequestBody MetricRequest request) {
-        return ResponseEntity.ok(metricService.updateMetric(id, request));
+    public ResponseEntity<MetricResponse> updateMetric(@PathVariable Long id,@PathVariable Long leaderboardId ,@RequestBody MetricRequest request) {
+        return ResponseEntity.ok(metricService.updateMetric(id,leaderboardId, request));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMetric(@PathVariable Long id){
-        metricService.deleteMetric(id);
+    public void deleteMetric(@PathVariable Long id, @PathVariable Long leaderboardId) {
+        metricService.deleteMetric(id, leaderboardId);
+    }
+
+    @GetMapping("/metric-exists")
+    public ResponseEntity<Boolean> metricExists(@PathVariable Long leaderboardId, @RequestParam String name) {
+        boolean exists = metricService.existsByLeaderboardIdAndName(leaderboardId, name);
+        return ResponseEntity.ok(exists);
     }
 }
